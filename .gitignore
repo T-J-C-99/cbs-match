@@ -7,14 +7,17 @@ node_modules/
 *.pid
 
 # Build outputs
+.next/
+**/.next/
+dist/
+**/dist/
+build/
+**/build/
 web/.next/
 web/dist/
 mobile/.expo/
 mobile/ios/build/
 mobile/android/app/build/
-.next/
-dist/
-build/
 coverage/
 
 # Python
@@ -27,13 +30,15 @@ venv/
 .venv/
 env/
 *.pyc
+.pytest_cache/
+.mypy_cache/
 
 # Database (dev)
 *.db
 *.sqlite
 *.sqlite3
 
-# Uploads (user-generated content)
+# Uploads
 api/uploads/
 
 # IDE
@@ -52,14 +57,16 @@ Thumbs.db
 npm-debug.log*
 
 # Test coverage
-coverage/
 .coverage
 htmlcov/
 
 # TypeScript build cache
 *.tsbuildinfo
 
-# Env files (security)
+# Env files
 .env
 .env.*
 !.env.example
+
+# Patches (artifacts)
+*.patch
