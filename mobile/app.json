@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "CBS Match",
+    "slug": "cbs-match-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "cbsmatch",
+    "extra": {
+      "apiBaseUrl": "http://localhost:8000"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.cbs-match-mobile"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow CBS Match to access your photos so you can add and edit profile pictures.",
+          "cameraPermission": "Allow CBS Match to access your camera so you can take a profile picture."
+        }
+      ]
+    ]
+  }
+}

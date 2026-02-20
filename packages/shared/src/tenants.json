@@ -1,0 +1,100 @@
+[
+  {
+    "slug": "cbs",
+    "name": "Columbia (CBS)",
+    "tagline": "NYC ambition meets intentional dating.",
+    "emailDomains": ["gsb.columbia.edu"],
+    "theme": {
+      "primary": "#1D3557",
+      "secondary": "#0F2742",
+      "accent": "#B9D9EB",
+      "bg": "#EAF4FA",
+      "text": "#0F172A",
+      "muted": "#5C6B7A"
+    }
+  },
+  {
+    "slug": "hbs",
+    "name": "Harvard (HBS)",
+    "tagline": "Bold ideas, grounded connection.",
+    "emailDomains": ["hbs.edu", "mba.hbs.edu"],
+    "theme": {
+      "primary": "#A51C30",
+      "secondary": "#7A1524",
+      "accent": "#D9C6A5",
+      "bg": "#F8F3F1",
+      "text": "#1F2937",
+      "muted": "#6B7280"
+    }
+  },
+  {
+    "slug": "gsb",
+    "name": "Stanford (GSB)",
+    "tagline": "Heart-led builders, Bay Area energy.",
+    "emailDomains": ["stanford.edu", "gsb.stanford.edu"],
+    "theme": {
+      "primary": "#8C1515",
+      "secondary": "#2E2D29",
+      "accent": "#B1040E",
+      "bg": "#F8F5F0",
+      "text": "#111827",
+      "muted": "#6B7280"
+    }
+  },
+  {
+    "slug": "wharton",
+    "name": "Wharton",
+    "tagline": "Analytical minds, real chemistry.",
+    "emailDomains": ["wharton.upenn.edu", "upenn.edu"],
+    "theme": {
+      "primary": "#011F5B",
+      "secondary": "#003E7E",
+      "accent": "#82AFD3",
+      "bg": "#F3F8FC",
+      "text": "#0F172A",
+      "muted": "#64748B"
+    }
+  },
+  {
+    "slug": "kellogg",
+    "name": "Kellogg",
+    "tagline": "High EQ, high standards.",
+    "emailDomains": ["kellogg.northwestern.edu", "northwestern.edu"],
+    "theme": {
+      "primary": "#4E2A84",
+      "secondary": "#3D1F66",
+      "accent": "#836EAA",
+      "bg": "#F6F3FB",
+      "text": "#1F2937",
+      "muted": "#6B7280"
+    }
+  },
+  {
+    "slug": "booth",
+    "name": "Booth",
+    "tagline": "Data-smart, people-first.",
+    "emailDomains": ["chicagobooth.edu", "uchicago.edu"],
+    "theme": {
+      "primary": "#800000",
+      "secondary": "#5B0000",
+      "accent": "#C79D6D",
+      "bg": "#F9F3F1",
+      "text": "#1F2937",
+      "muted": "#6B7280"
+    }
+  },
+  {
+    "slug": "sloan",
+    "name": "MIT Sloan",
+    "tagline": "Inventive, curious, and intentional.",
+    "emailDomains": ["mitsloan.mit.edu", "mit.edu"],
+    "theme": {
+      "primary": "#A31F34",
+      "secondary": "#750E21",
+      "accent": "#8A8B8C",
+      "bg": "#F8F2F3",
+      "text": "#111827",
+      "muted": "#6B7280"
+    }
+  }
+]
