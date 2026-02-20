@@ -1,0 +1,19 @@
+{
+  "name": "cbs-match",
+  "version": "1.5.0",
+  "private": true,
+  "workspaces": [
+    "web",
+    "mobile",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:up": "bash scripts/dev_up.sh",
+    "dev:down": "bash scripts/dev_down.sh",
+    "dev:wm": "bash scripts/dev_wm.sh",
+    "mobile": "npm --workspace mobile run start",
+    "shared:test": "npm --workspace @cbs-match/shared run test",
+    "web": "npm --workspace cbs-match-web run dev",
+    "api": "cd api && source .venv/bin/activate && uvicorn app.main:app --reload --host 127.0.0.1 --port 8000"
+  }
+}
