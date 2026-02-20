@@ -1,0 +1,6 @@
+module Pods_CBSMatch {
+  umbrella header "Pods-CBSMatch-umbrella.h"
+
+  export *
+  module * { export * }
+}

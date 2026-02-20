@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Dev runtime files
+.dev/
+*.pid
+
+# Build outputs
+web/.next/
+web/dist/
+mobile/.expo/
+mobile/ios/build/
+mobile/android/app/build/
+.next/
+dist/
+build/
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+*.pyc
+
+# Database (dev)
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads (user-generated content)
+api/uploads/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Env files (security)
+.env
+.env.*
+!.env.example
