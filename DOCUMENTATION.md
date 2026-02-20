@@ -83,8 +83,8 @@ CBS Match is a **three-tier application**:
 | **Web Frontend** | Next.js 15 (App Router), TypeScript, Tailwind CSS |
 | **Mobile App** | React Native, Expo, TypeScript, React Query |
 | **Backend API** | FastAPI, Python 3.11+, SQLAlchemy |
-| **Database** | PostgreSQL (SQLite for local dev) |
-| **Auth** | JWT (access + refresh tokens), bcrypt password hashing |
+| **Database** | PostgreSQL |
+| **Auth** | httpOnly session cookie + JWT access tokens, refresh tokens, bcrypt password hashing |
 | **File Storage** | Local filesystem (`/uploads` directory) |
 | **Deployment** | Docker Compose |
 
@@ -94,7 +94,7 @@ CBS Match is a **three-tier application**:
 cbs-match/
 ├── api/                          # Python FastAPI backend
 │   ├── app/
-│   │   ├── main.py               # All API endpoints (single file)
+│   │   ├── main.py               # App setup, mounts modular routers
 │   │   ├── models.py             # SQLAlchemy ORM models
 │   │   ├── repo.py               # Database operations (auth, users, blocks)
 │   │   ├── traits.py             # Personality trait computation
@@ -103,9 +103,20 @@ cbs-match/
 │   │   ├── schemas.py            # Pydantic models
 │   │   ├── survey_loader.py      # Survey JSON loading
 │   │   ├── survey_admin_repo.py  # Survey versioning admin
+│   │   ├── routes/               # Modular API routers
+│   │   │   ├── __init__.py       # Router registration
+│   │   │   ├── auth.py           # Auth endpoints (register, login, etc.)
+│   │   │   ├── profile.py        # User profile endpoints
+│   │   │   ├── survey.py         # Survey session endpoints
+│   │   │   ├── match.py          # Match endpoints
+│   │   │   ├── safety.py         # Block/report endpoints
+│   │   │   ├── chat.py           # Chat endpoints
+│   │   │   ├── events.py         # Event endpoints
+│   │   │   └── admin.py          # Admin endpoints
 │   │   ├── auth/
 │   │   │   ├── deps.py           # Auth dependencies (get_current_user)
-│   │   │   └── security.py       # Password hashing, JWT creation
+│   │   │   ├── security.py       # Password hashing, JWT creation
+│   │   │   └── admin_deps.py     # Admin auth dependencies
 │   │   └── services/
 │   │       ├── matching.py       # Core matching algorithm
 │   │       ├── explanations.py   # Match explanation generation
@@ -817,17 +828,23 @@ created_at TIMESTAMPTZ
 
 **Rationale:** Product decision to reduce friction during pilot. May be re-enabled for production.
 
-**Location:** `api/app/main.py` - `auth_register()`:
+**Location:** `api/app/routes/auth.py` - `auth_register()`:
 ```python
-# Temporary product decision: bypass email verification gating for all newly created accounts.
 auth_repo.set_user_verified(str(created["id"]))
 ```
 
-### 2. Single-File API Structure
+### 2. Modular Router Structure
 
-**Decision:** All API endpoints are in `main.py` (~1500 lines) rather than split into routers.
+**Decision:** API endpoints are organized in separate router modules under `api/app/routes/`:
+- `auth.py` - Authentication (register, login, logout, verify-email)
+- `profile.py` - User profile management
+- `survey.py` - Survey session handling
+- `match.py` - Match viewing and actions
+- `safety.py` - Blocking and reporting
+- `chat.py` - Chat threads and messages
+- `admin.py` - Admin operations
 
-**Rationale:** Simplicity for a small team. Easy to search. May need refactoring as the codebase grows.
+**Rationale:** Better organization for a growing codebase. Each domain has its own file, making it easier to navigate and maintain. Routers are registered in `routes/__init__.py` and mounted in `main.py`.
 
 ### 3. Bidirectional Match Assignments
 
@@ -906,11 +923,11 @@ auth_repo.set_user_verified(str(created["id"]))
 
 **Current State:** Users are expected to contact via email/phone/Instagram.
 
-### 3. SQLite for Local Development
+### 3. PostgreSQL Required
 
-**Issue:** The `cbs_match_dev.db` file suggests SQLite support, but production expects Postgres.
+**Note:** The application uses PostgreSQL exclusively. Migrations use Postgres-specific extensions (`pgcrypto`).
 
-**Consideration:** Migration `001_init.sql` uses `pgcrypto` extension (Postgres-specific).
+**Development:** Use Docker Compose which includes PostgreSQL, or run a local Postgres instance.
 
 ### 4. Mobile API Base URL Configuration
 
@@ -1028,6 +1045,33 @@ make test    # Run tests
 make match   # Run weekly matching
 ```
 
+### GitHub CI
+
+The repository has a GitHub Actions CI workflow (`.github/workflows/ci.yml`) that runs on every push and PR to `main`:
+
+**Jobs:**
+1. **API Tests** - Python 3.11, pip install, pytest
+2. **Web Build & Lint** - Node 20, npm install, lint, jest tests
+3. **Shared Package Tests** - Node 20, npm install, vitest
+
+**To verify a build is functional locally:**
+```bash
+# API tests
+cd api && pip install -r requirements.txt && pytest -q
+
+# Web lint and tests
+cd web && npm install && npm run lint && npx jest --config jest.config.ts --runInBand
+
+# Shared package tests
+cd packages/shared && npm install && npm test
+```
+
+**Important files to never commit:**
+- `node_modules/` - Should be in `.gitignore`
+- `.env` files with secrets
+- `*.db` local database files
+- `uploads/` user uploaded content
+
 ---
 
 ## Summary for External Contributors
@@ -1038,24 +1082,43 @@ CBS Match is a **weekly matching platform** for CBS MBA students. To understand 
 2. **Read `matching.py`** - Core algorithm is ~200 lines
 3. **Read `traits.py`** - How answers become personality scores
 4. **Read `copy_templates.py`** - How matches are explained
-5. **Read `main.py`** - All API endpoints in one file
+5. **Browse `api/app/routes/`** - API endpoints organized by domain
 
 **Key files to modify for improvements:**
 - Matching algorithm: `api/app/services/matching.py`
 - Personality computation: `api/app/traits.py`
 - Explanation generation: `api/app/services/copy_templates.py`
 - Survey questions: `questions.json`
+- Auth endpoints: `api/app/routes/auth.py`
 - Web UI: `web/app/` (Next.js App Router)
 - Mobile UI: `mobile/src/screens/`
 
 **To add a new feature:**
 1. Add database migration in `api/migrations/`
-2. Add endpoint(s) in `api/app/main.py`
+2. Add endpoint(s) in appropriate `api/app/routes/*.py` file
 3. Add repository functions in `api/app/repo.py`
 4. Add frontend components in `web/app/` or `mobile/src/screens/`
 5. Add tests in `api/tests/`
 
 ---
 
-*Documentation generated: February 17, 2026*
+## Verification Notes
+
+Claims in this document verified against codebase:
+
+- **Auth mechanism**: Uses httpOnly session cookie (`cbs_session`) set by register/login endpoints; also supports Bearer token in Authorization header. Verified in `api/app/routes/auth.py` lines 75-80 (`_set_session_cookie`) and `api/app/auth/deps.py` line 30 (`SESSION_COOKIE_NAME = "cbs_session"`).
+
+- **Email verification bypass**: Verified in `api/app/routes/auth.py` - `auth_register()` calls `auth_repo.set_user_verified(str(created["id"]))` immediately after user creation.
+
+- **Router structure**: Endpoints organized in modular files under `api/app/routes/`. Routers registered in `routes/__init__.py` and mounted via `include_modular_routers(app)` in `main.py`.
+
+- **GitHub CI**: Workflow exists at `.github/workflows/ci.yml` with three jobs: `api` (pytest), `web` (lint + jest), `shared` (vitest).
+
+- **Environment variables**: Verified in `api/app/config.py` - includes `MIN_SCORE` default 0.60, `ADMIN_TOKEN`, `JWT_SECRET`, `DEV_MODE`, rate limit vars, etc.
+
+- **PostgreSQL required**: Migrations in `api/migrations/` use `pgcrypto` extension (Postgres-specific). No SQLite support.
+
+---
+
+*Documentation generated: February 20, 2026*
 *Version: CBS Match v1.5*
