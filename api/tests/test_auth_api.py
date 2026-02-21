@@ -335,3 +335,168 @@ def test_auth_me_endpoint(monkeypatch):
     assert body["is_email_verified"] is True
 
     m.app.dependency_overrides = {}
+
+
+def test_auth_login_bearer_mode_returns_tokens(monkeypatch):
+    """Test that X-Auth-Mode: bearer returns tokens in response body (for mobile)."""
+    client = _client(monkeypatch)
+    store = {
+        "users_by_email": {},
+        "users_by_id": {},
+        "refresh": {},
+    }
+
+    def create_user(email: str, password_hash: str, username: str | None = None, tenant_id: str | None = None):
+        user = {
+            "id": "11111111-1111-1111-1111-111111111111",
+            "email": email,
+            "password_hash": password_hash,
+            "is_email_verified": True,
+            "disabled_at": None,
+            "username": username,
+            "tenant_id": tenant_id,
+        }
+        store["users_by_email"][email] = user
+        store["users_by_id"][user["id"]] = user
+        return user
+
+    def get_user_by_email(email: str, tenant_id: str | None = None):
+        return store["users_by_email"].get(email)
+
+    monkeypatch.setattr(m.auth_repo, "create_user", create_user)
+    monkeypatch.setattr(m.auth_repo, "get_user_by_email", get_user_by_email)
+    monkeypatch.setattr(m.auth_repo, "set_user_verified", lambda user_id: None)
+    monkeypatch.setattr(m.auth_repo, "update_user_profile", lambda **kwargs: {"id": kwargs.get("user_id")})
+    monkeypatch.setattr(m.auth_repo, "update_last_login", lambda *args, **kwargs: None)
+    monkeypatch.setattr(m.auth_repo, "create_refresh_token_row", lambda user_id, token_hash, expires_at: store["refresh"].update({token_hash: {"user_id": user_id, "expires_at": expires_at, "revoked_at": None}}))
+    monkeypatch.setattr(auth_routes, "create_access_token", lambda **kwargs: "access-token")
+    monkeypatch.setattr(auth_routes, "create_refresh_token", lambda: "refresh-token")
+    monkeypatch.setattr(auth_routes, "hash_refresh_token", lambda token: f"h::{token}")
+    monkeypatch.setattr(auth_routes, "verify_password", lambda pw, hash: True)
+
+    # Register a user first
+    reg = client.post(
+        "/auth/register",
+        json={
+            "email": "mobile@gsb.columbia.edu",
+            "password": "longpassword1",
+        },
+    )
+    assert reg.status_code == 201
+
+    # Login with bearer mode header
+    login = client.post(
+        "/auth/login",
+        json={"email": "mobile@gsb.columbia.edu", "password": "longpassword1"},
+        headers={"X-Auth-Mode": "bearer"},
+    )
+    assert login.status_code == 200
+    out = login.json()
+    # Bearer mode should return tokens in body
+    assert "access_token" in out
+    assert "refresh_token" in out
+    assert out["token_type"] == "bearer"
+    assert "expires_in" in out
+
+
+def test_auth_login_default_mode_returns_user_info(monkeypatch):
+    """Test that default login (no X-Auth-Mode) returns user info, not tokens (for web)."""
+    client = _client(monkeypatch)
+    store = {
+        "users_by_email": {},
+        "users_by_id": {},
+        "refresh": {},
+    }
+
+    def create_user(email: str, password_hash: str, username: str | None = None, tenant_id: str | None = None):
+        user = {
+            "id": "22222222-2222-2222-2222-222222222222",
+            "email": email,
+            "password_hash": password_hash,
+            "is_email_verified": True,
+            "disabled_at": None,
+            "username": username,
+            "tenant_id": tenant_id,
+        }
+        store["users_by_email"][email] = user
+        store["users_by_id"][user["id"]] = user
+        return user
+
+    def get_user_by_email(email: str, tenant_id: str | None = None):
+        return store["users_by_email"].get(email)
+
+    monkeypatch.setattr(m.auth_repo, "create_user", create_user)
+    monkeypatch.setattr(m.auth_repo, "get_user_by_email", get_user_by_email)
+    monkeypatch.setattr(m.auth_repo, "set_user_verified", lambda user_id: None)
+    monkeypatch.setattr(m.auth_repo, "update_user_profile", lambda **kwargs: {"id": kwargs.get("user_id")})
+    monkeypatch.setattr(m.auth_repo, "update_last_login", lambda *args, **kwargs: None)
+    monkeypatch.setattr(m.auth_repo, "create_refresh_token_row", lambda user_id, token_hash, expires_at: store["refresh"].update({token_hash: {"user_id": user_id, "expires_at": expires_at, "revoked_at": None}}))
+    monkeypatch.setattr(auth_routes, "create_access_token", lambda **kwargs: "access-token")
+    monkeypatch.setattr(auth_routes, "create_refresh_token", lambda: "refresh-token")
+    monkeypatch.setattr(auth_routes, "hash_refresh_token", lambda token: f"h::{token}")
+    monkeypatch.setattr(auth_routes, "verify_password", lambda pw, hash: True)
+
+    # Register a user first
+    reg = client.post(
+        "/auth/register",
+        json={
+            "email": "web@gsb.columbia.edu",
+            "password": "longpassword1",
+        },
+    )
+    assert reg.status_code == 201
+
+    # Login WITHOUT bearer mode header (default - web behavior)
+    login = client.post(
+        "/auth/login",
+        json={"email": "web@gsb.columbia.edu", "password": "longpassword1"},
+    )
+    assert login.status_code == 200
+    out = login.json()
+    # Default mode should return user info, NOT tokens in body
+    assert "id" in out
+    assert "email" in out
+    assert "access_token" not in out
+    assert "refresh_token" not in out
+
+
+def test_auth_register_bearer_mode_returns_tokens(monkeypatch):
+    """Test that X-Auth-Mode: bearer on register returns tokens in response body (for mobile)."""
+    client = _client(monkeypatch)
+
+    def create_user(email: str, password_hash: str, username: str | None = None, tenant_id: str | None = None):
+        return {
+            "id": "33333333-3333-3333-3333-333333333333",
+            "email": email,
+            "password_hash": password_hash,
+            "is_email_verified": False,
+            "disabled_at": None,
+            "username": username,
+            "tenant_id": tenant_id,
+        }
+
+    monkeypatch.setattr(m.auth_repo, "create_user", create_user)
+    monkeypatch.setattr(m.auth_repo, "get_user_by_email", lambda email, tenant_id=None: None)
+    monkeypatch.setattr(m.auth_repo, "set_user_verified", lambda user_id: None)
+    monkeypatch.setattr(m.auth_repo, "update_user_profile", lambda **kwargs: {"id": kwargs.get("user_id")})
+    monkeypatch.setattr(m.auth_repo, "create_refresh_token_row", lambda *args, **kwargs: None)
+    monkeypatch.setattr(auth_routes, "create_access_token", lambda **kwargs: "access-token")
+    monkeypatch.setattr(auth_routes, "create_refresh_token", lambda: "refresh-token")
+    monkeypatch.setattr(auth_routes, "hash_refresh_token", lambda token: f"h::{token}")
+
+    # Register with bearer mode header
+    res = client.post(
+        "/auth/register",
+        json={
+            "email": "mobile-reg@gsb.columbia.edu",
+            "password": "longpassword1",
+        },
+        headers={"X-Auth-Mode": "bearer"},
+    )
+    assert res.status_code == 201
+    out = res.json()
+    # Bearer mode should return tokens in body
+    assert "access_token" in out
+    assert "refresh_token" in out
+    assert out["token_type"] == "bearer"
+    assert "expires_in" in out

@@ -116,6 +116,12 @@ def _issue_tokens(user: dict[str, Any], *, tenant_slug: str | None = None) -> di
     }
 
 
+def _is_bearer_mode(request: Request) -> bool:
+    """Check if client requested bearer token mode (for mobile clients)."""
+    auth_mode = str(request.headers.get("X-Auth-Mode") or "").strip().lower()
+    return auth_mode == "bearer"
+
+
 def _set_session_cookie(response: Response, access_token: str) -> None:
     """Set the httpOnly session cookie with the access token."""
     response.set_cookie(
@@ -282,8 +288,12 @@ async def auth_register(request: Request, response: Response, _: None = RL_AUTH_
     
     tokens = _issue_tokens_compat(created, tenant_slug=tenant_slug)
     
-    # Set httpOnly session cookie
+    # Set httpOnly session cookie (harmless for mobile, required for web)
     _set_session_cookie(response, tokens["access_token"])
+    
+    # If client requested bearer mode (mobile), return tokens in body
+    if _is_bearer_mode(request):
+        return tokens
     
     # Return user info (no tokens in body - they're in cookie)
     return {
@@ -423,8 +433,12 @@ def auth_login(payload: dict[str, Any], request: Request, response: Response, _:
     
     tokens = _issue_tokens_compat(user, tenant_slug=user_tenant_slug)
     
-    # Set httpOnly session cookie
+    # Set httpOnly session cookie (harmless for mobile, required for web)
     _set_session_cookie(response, tokens["access_token"])
+    
+    # If client requested bearer mode (mobile), return tokens in body
+    if _is_bearer_mode(request):
+        return tokens
     
     # Return user info (no tokens in body - they're in cookie)
     return {

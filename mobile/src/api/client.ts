@@ -11,7 +11,7 @@ async function performRefresh(): Promise<string | null> {
   const url = `${state.apiBaseUrl.replace(/\/$/, "")}/auth/refresh`;
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "X-Auth-Mode": "bearer" },
     body: JSON.stringify({ refresh_token: refreshToken })
   });
   const data = await res.json().catch(() => ({}));

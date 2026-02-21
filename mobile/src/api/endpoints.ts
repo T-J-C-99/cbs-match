@@ -26,10 +26,15 @@ export const api = {
         email,
         password,
         ...(username ? { username } : {}),
-      })
+      }),
+      headers: { "X-Auth-Mode": "bearer" }
     }, authRegisterResponseSchema),
   login: (identifier: string, password: string) =>
-    apiRequest("/auth/login", { method: "POST", body: JSON.stringify({ identifier, password }) }, authTokenSchema),
+    apiRequest("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ identifier, password }),
+      headers: { "X-Auth-Mode": "bearer" }
+    }, authTokenSchema),
   verifyEmail: (email: string, code: string) =>
     apiRequest("/auth/verify-email", { method: "POST", body: JSON.stringify({ email, code }) }),
   checkUsernameAvailability: (username: string) =>
