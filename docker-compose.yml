@@ -33,6 +33,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     ports:
       - "8000:8000"
     volumes:
@@ -44,6 +50,7 @@ services:
       dockerfile: web/Dockerfile
     container_name: cbs-match-web
     environment:
+      API_BASE_URL: http://api:8000
       NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
       NEXT_PUBLIC_ADMIN_TOKEN: dev-admin-token
     depends_on:

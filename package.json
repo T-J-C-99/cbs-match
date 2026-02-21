@@ -14,6 +14,14 @@
     "mobile": "npm --workspace mobile run start",
     "shared:test": "npm --workspace @cbs-match/shared run test",
     "web": "npm --workspace cbs-match-web run dev",
-    "api": "cd api && source .venv/bin/activate && uvicorn app.main:app --reload --host 127.0.0.1 --port 8000"
+    "api": "cd api && source .venv/bin/activate && uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:rebuild": "docker-compose build --no-cache && docker-compose up -d",
+    "docker:rebuild:api": "docker-compose build api && docker-compose up -d api",
+    "docker:rebuild:web": "docker-compose build web && docker-compose up -d web",
+    "docker:logs": "docker-compose logs -f",
+    "docker:logs:api": "docker-compose logs -f api",
+    "docker:ps": "docker-compose ps"
   }
 }
