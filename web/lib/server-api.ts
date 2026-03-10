@@ -4,7 +4,10 @@ import { TENANT_COOKIE } from "@/lib/tenant";
 export const REFRESH_COOKIE = "cbs_refresh_token";
 
 export function apiBaseUrl() {
-  return process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  const url = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (url) return url;
+  if (process.env.NODE_ENV !== "production") return "http://localhost:8000";
+  throw new Error("Missing API_BASE_URL (or NEXT_PUBLIC_API_BASE_URL) in production");
 }
 
 export async function getRefreshTokenFromCookie() {

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { apiClient, apiGet, apiPost, ApiError, formatError } from "@/lib/apiClient";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { ApiError, formatError } from "@/lib/apiClient";
 
 type User = { 
   id: string; 
@@ -35,6 +35,33 @@ function debugLog(...args: unknown[]) {
   }
 }
 
+async function requestAuthJson<T = unknown>(url: string, init: RequestInit = {}): Promise<T> {
+  const headers = new Headers(init.headers);
+  const isForm = typeof FormData !== "undefined" && init.body instanceof FormData;
+  if (!isForm && !headers.has("Content-Type") && init.body != null) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  const response = await fetch(url, {
+    ...init,
+    headers,
+    credentials: "include",
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new ApiError(
+      response.status,
+      url,
+      init.method || "GET",
+      data,
+      (data?.detail as string | undefined) || (data?.message as string | undefined) || "Request failed"
+    );
+  }
+
+  return data as T;
+}
+
 /**
  * AuthProvider using httpOnly cookie-based session.
  * 
@@ -48,42 +75,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    * Fetch current user from /auth/me endpoint.
    * Uses cookie session (credentials: "include" via apiClient).
    */
-  const refreshMe = async () => {
+  const refreshMe = useCallback(async () => {
     debugLog("Fetching current user from /auth/me");
     
     try {
-      const data = await apiGet<{ 
+      const data = await requestAuthJson<{ user?: {
         id: string; 
         email: string; 
         username?: string; 
         is_email_verified: boolean;
         tenant_slug?: string;
-      }>("/auth/me");
+      }; access_token?: string }>("/api/auth/me");
       
-      debugLog("User fetched successfully:", data.email);
-      setUser(data);
+      if (!data?.user) {
+        setUser(null);
+        return;
+      }
+      debugLog("User fetched successfully:", data.user.email);
+      setUser(data.user);
     } catch (error) {
       debugLog("Failed to fetch user:", formatError(error));
       setUser(null);
     }
-  };
+  }, []);
 
   // Initial load - fetch user state on mount
   useEffect(() => {
     debugLog("Initial auth check starting...");
     refreshMe().finally(() => setLoading(false));
-  }, []);
+  }, [refreshMe]);
 
   /**
    * Login via cookie-based session.
    * Server sets httpOnly cookie, we just call /auth/me after.
    */
-  const login = async (identifier: string, password: string) => {
+  const login = useCallback(async (identifier: string, password: string) => {
     debugLog(`Login attempt for: ${identifier}`);
     
     try {
-      // Login sets httpOnly cookie session
-      await apiPost("/auth/login", { identifier, password });
+      await requestAuthJson("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ identifier, password }),
+      });
       
       // Fetch user state using the new session
       await refreshMe();
@@ -93,38 +126,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       debugLog("Login failed:", formatError(error));
       throw error;
     }
-  };
+  }, [refreshMe]);
 
   /**
    * Register via cookie-based session.
    * Server sets httpOnly cookie, we just call /auth/me after.
    */
-  const register = async (payload: FormData | { email: string; password: string; username?: string; display_name?: string; cbs_year?: string; hometown?: string; gender_identity?: string; seeking_genders?: string[] }) => {
+  const register = useCallback(async (payload: FormData | { email: string; password: string; username?: string; display_name?: string; cbs_year?: string; hometown?: string; gender_identity?: string; seeking_genders?: string[] }) => {
     const isForm = typeof FormData !== "undefined" && payload instanceof FormData;
     debugLog(`Register attempt (isForm: ${isForm})`);
     
     try {
-      if (isForm) {
-        // For FormData, use raw fetch with credentials
-        const response = await fetch("/api/auth/register", {
-          method: "POST",
-          body: payload,
-          credentials: "include",
-        });
-        
-        if (!response.ok) {
-          const data = await response.json().catch(() => ({}));
-          throw new ApiError(
-            response.status,
-            "/api/auth/register",
-            "POST",
-            data,
-            data?.detail || data?.message || "Registration failed"
-          );
-        }
-      } else {
-        await apiPost("/auth/register", payload);
-      }
+      await requestAuthJson("/api/auth/register", {
+        method: "POST",
+        body: isForm ? payload : JSON.stringify(payload),
+      });
       
       // Fetch user state using the new session
       await refreshMe();
@@ -134,28 +150,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       debugLog("Register failed:", formatError(error));
       throw error;
     }
-  };
+  }, [refreshMe]);
 
   /**
    * Logout - clear cookie session on server.
    */
-  const logout = async () => {
+  const logout = useCallback(async () => {
     debugLog("Logout called");
     
     try {
-      await apiPost("/auth/logout");
+      await requestAuthJson("/api/auth/logout", {
+        method: "POST",
+      });
     } catch (error) {
       debugLog("Logout request failed:", formatError(error));
     }
     
     setUser(null);
-  };
+  }, []);
 
   /**
    * Fetch wrapper for backward compatibility.
    * Uses credentials: "include" for cookie-based auth.
    */
-  const fetchWithAuth = async (url: string, options?: RequestInit): Promise<Response> => {
+  const fetchWithAuth = useCallback(async (url: string, options?: RequestInit): Promise<Response> => {
     debugLog(`fetchWithAuth: ${options?.method || "GET"} ${url}`);
     
     const headers = new Headers(options?.headers);
@@ -170,43 +188,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     
     return response;
-  };
+  }, []);
 
   /**
    * Verify email with 6-digit code.
    */
-  const verifyEmail = async (email: string, code: string): Promise<void> => {
+  const verifyEmail = useCallback(async (email: string, code: string): Promise<void> => {
     debugLog(`verifyEmail for: ${email}`);
     
     try {
-      await apiPost("/auth/verify-email", { email, code });
+      await requestAuthJson("/api/auth/verify-email", {
+        method: "POST",
+        body: JSON.stringify({ email, code }),
+      });
       await refreshMe();
       debugLog("Email verified successfully");
     } catch (error) {
       debugLog("Email verification failed:", formatError(error));
       throw error;
     }
-  };
+  }, [refreshMe]);
 
   /**
    * Resend verification code.
    */
-  const resendVerificationCode = async (email: string): Promise<{ message?: string; dev_only?: { verification_code?: string } }> => {
+  const resendVerificationCode = useCallback(async (email: string): Promise<{ message?: string; dev_only?: { verification_code?: string } }> => {
     debugLog(`resendVerificationCode for: ${email}`);
     
     try {
-      const result = await apiPost<{ message?: string; dev_only?: { verification_code?: string } }>("/auth/resend-verification", { email });
+      const result = await requestAuthJson<{ message?: string; dev_only?: { verification_code?: string } }>("/api/auth/verify-email/resend", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
       debugLog("Verification code resent");
       return result;
     } catch (error) {
       debugLog("Resend verification failed:", formatError(error));
       throw error;
     }
-  };
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({ user, loading, login, register, logout, refreshMe, fetchWithAuth, verifyEmail, resendVerificationCode }),
-    [user, loading]
+    [user, loading, login, register, logout, refreshMe, fetchWithAuth, verifyEmail, resendVerificationCode]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

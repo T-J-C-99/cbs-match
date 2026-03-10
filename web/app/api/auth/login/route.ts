@@ -1,15 +1,25 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { apiBaseUrl, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
+import { safeProxyJson } from "@/lib/route-proxy";
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const res = await fetch(`${apiBaseUrl()}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...(await tenantHeader()) },
-    body,
-  });
-  const data = await res.json().catch(() => ({}));
+  let data: any = {};
+  const proxied = await safeProxyJson(async () => {
+    const res = await fetch(`${apiBaseUrl()}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(await tenantHeader()) },
+      body,
+    });
+    data = await res.json().catch(() => ({}));
+    return new Response(JSON.stringify(data), { status: res.status, headers: { "Content-Type": "application/json" } });
+  }, "Login service unavailable");
+
+  if (proxied.status >= 500) {
+    return proxied;
+  }
+  const res = proxied;
   if (!res.ok) return NextResponse.json(data, { status: res.status });
 
   const refreshToken = data.refresh_token;

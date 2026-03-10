@@ -1,23 +1,31 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { apiBaseUrl, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
+import { safeProxyJson } from "@/lib/route-proxy";
 
 export async function POST(req: Request) {
   const contentType = req.headers.get("content-type") || "";
+  let data: any = {};
+  const proxied = await safeProxyJson(async () => {
+    const res = contentType.includes("multipart/form-data")
+      ? await fetch(`${apiBaseUrl()}/auth/register`, {
+          method: "POST",
+          headers: { ...(await tenantHeader()) },
+          body: await req.formData(),
+        })
+      : await fetch(`${apiBaseUrl()}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...(await tenantHeader()) },
+          body: await req.text(),
+        });
+    data = await res.json().catch(() => ({}));
+    return new Response(JSON.stringify(data), { status: res.status, headers: { "Content-Type": "application/json" } });
+  }, "Registration service unavailable");
 
-  const res = contentType.includes("multipart/form-data")
-    ? await fetch(`${apiBaseUrl()}/auth/register`, {
-        method: "POST",
-        headers: { ...(await tenantHeader()) },
-        body: await req.formData(),
-      })
-    : await fetch(`${apiBaseUrl()}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...(await tenantHeader()) },
-        body: await req.text(),
-      });
-
-  const data = await res.json().catch(() => ({}));
+  if (proxied.status >= 500) {
+    return proxied;
+  }
+  const res = proxied;
   if (!res.ok) return NextResponse.json(data, { status: res.status });
 
   if (data.refresh_token) {
