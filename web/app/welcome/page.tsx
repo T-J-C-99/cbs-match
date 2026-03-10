@@ -27,6 +27,18 @@ function WelcomeInner() {
 
   const isNewUser = useMemo(() => !state?.onboarding?.has_any_session, [state]);
 
+  const beginSurvey = async (currentState: UserState) => {
+    if (currentState?.onboarding?.active_session_id) {
+      router.replace(`/survey/${currentState.onboarding.active_session_id}`);
+      return;
+    }
+
+    const res = await fetchWithAuth(`/api/sessions`, { method: "POST" });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Could not create session");
+    router.replace(`/survey/${data.session_id}`);
+  };
+
   useEffect(() => {
     const load = async () => {
       setLoading(true);
@@ -43,6 +55,8 @@ function WelcomeInner() {
           }
           return;
         }
+
+        await beginSurvey(data);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Unexpected error");
       } finally {
@@ -56,14 +70,8 @@ function WelcomeInner() {
     setError(null);
     setStarting(true);
     try {
-      if (state?.onboarding?.active_session_id) {
-        router.push(`/survey/${state.onboarding.active_session_id}`);
-        return;
-      }
-      const res = await fetchWithAuth(`/api/sessions`, { method: "POST" });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || "Could not create session");
-      router.push(`/survey/${data.session_id}`);
+      if (!state) throw new Error("Could not load user state");
+      await beginSurvey(state);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unexpected error");
     } finally {
@@ -81,7 +89,7 @@ function WelcomeInner() {
       <p className="mt-3 text-slate-600">
         {isNewUser
           ? "Before matching begins, complete your onboarding survey. This survey is required and cannot be skipped."
-          : "You have an in-progress survey session. Continue where you left off to unlock your home experience."}
+          : "You have an in-progress survey session. We’re taking you back to it now."}
       </p>
 
       <div className="mt-8 rounded border border-slate-200 bg-white p-5">

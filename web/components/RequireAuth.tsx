@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
-import { apiGet, formatError } from "@/lib/apiClient";
+import { formatError } from "@/lib/apiClient";
 import { AuthGateSkeleton } from "@/components/SkeletonFrames";
 
 type GuardState = {
@@ -24,7 +24,7 @@ export default function RequireAuth({
   requireCompleteProfile?: boolean;
 }) {
   const router = useRouter();
-  const { user, loading } = useAuth();
+  const { user, loading, fetchWithAuth } = useAuth();
   const [guardState, setGuardState] = useState<GuardState>({
     checked: !(requireCompletedSurvey || requireCompleteProfile),
     hasCompletedSurvey: false,
@@ -55,10 +55,15 @@ export default function RequireAuth({
 
     const checkState = async () => {
       try {
-        const data = await apiGet<{
+        const res = await fetchWithAuth("/api/users/me/state");
+        const data = (await res.json().catch(() => ({}))) as {
           onboarding?: { has_completed_survey?: boolean };
           profile?: { has_required_profile?: boolean };
-        }>("/users/me/state");
+        };
+
+        if (!res.ok) {
+          throw new Error((data as { detail?: string })?.detail || "Could not load auth state");
+        }
 
         if (cancelled) return;
 
@@ -87,6 +92,7 @@ export default function RequireAuth({
   }, [
     loading,
     user,
+    fetchWithAuth,
     requireVerified,
     requireCompletedSurvey,
     requireCompleteProfile,

@@ -18,6 +18,18 @@ function StartInner() {
         return;
       }
       if (!data?.onboarding?.has_completed_survey) {
+        if (data?.onboarding?.active_session_id) {
+          router.replace(`/survey/${data.onboarding.active_session_id}`);
+          return;
+        }
+
+        const sessionRes = await fetchWithAuth(`/api/sessions`, { method: "POST" });
+        const sessionData = await sessionRes.json().catch(() => ({}));
+        if (sessionRes.ok && sessionData?.session_id) {
+          router.replace(`/survey/${sessionData.session_id}`);
+          return;
+        }
+
         router.replace("/welcome");
         return;
       }

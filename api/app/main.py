@@ -63,7 +63,7 @@ from .deps import tenant_context_from_user as _tenant_context_from_user
 from .deps import tenant_id_from_user as _tenant_id_from_user
 from .deps import validate_admin_token as _validate_admin_token_impl
 from .routes import include_modular_routers
-from .survey_loader import get_file_survey_definition, get_survey_definition
+from .survey_loader import get_file_survey_definition, get_survey_definition, is_placeholder_survey_definition
 from . import survey_admin_repo
 from .traits import compute_traits
 from . import repo as auth_repo
@@ -141,12 +141,22 @@ def on_startup() -> None:
         sync_tenants_from_shared_config(db)
         db.commit()
     # Bootstrap per SURVEY_SLUG, not global row count, to avoid "active: none"
-    # when legacy rows exist under other slugs.
-    if not survey_admin_repo.get_active_definition(SURVEY_SLUG):
+    # when legacy rows exist under other slugs. Also self-heal if an empty
+    # placeholder survey was previously bootstrapped into the DB.
+    active = survey_admin_repo.get_active_definition(SURVEY_SLUG)
+    code_definition = get_file_survey_definition()
+    if not active:
         survey_admin_repo.bootstrap_initial_definition(
             slug=SURVEY_SLUG,
             version=SURVEY_VERSION,
-            definition_json=get_file_survey_definition(),
+            definition_json=code_definition,
+        )
+    elif is_placeholder_survey_definition(active.get("definition_json")) and not is_placeholder_survey_definition(code_definition):
+        survey_admin_repo.initialize_active_from_code(
+            slug=SURVEY_SLUG,
+            definition_json=code_definition,
+            actor_user_id=None,
+            force=True,
         )
 
 
