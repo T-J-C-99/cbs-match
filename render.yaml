@@ -1,0 +1,72 @@
+services:
+  - type: web
+    name: cbs-match-api
+    runtime: docker
+    plan: starter
+    dockerContext: .
+    dockerfilePath: ./api/Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEV_MODE
+        value: "false"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cbs-match-db
+          property: connectionString
+      - key: QUESTIONS_PATH
+        value: /app/questions.json
+      - key: ACCESS_TOKEN_TTL_MINUTES
+        value: "15"
+      - key: REFRESH_TOKEN_TTL_DAYS
+        value: "30"
+      - key: VERIFICATION_TOKEN_TTL_HOURS
+        value: "24"
+      - key: MATCH_EXPIRY_HOURS
+        value: "72"
+      - key: MATCH_TIMEZONE
+        value: America/New_York
+      - key: LOOKBACK_WEEKS
+        value: "6"
+      - key: MIN_SCORE
+        value: "0.60"
+      - key: MATCH_TOP_K
+        value: "60"
+      - key: MATCH_ALGO_MODE
+        value: stable_bipartite_if_possible
+      - key: RL_AUTH_REGISTER_LIMIT
+        value: "100"
+      - key: RL_AUTH_LOGIN_LIMIT
+        value: "100"
+      - key: RL_AUTH_VERIFY_EMAIL_LIMIT
+        value: "100"
+      - key: RL_AUTH_REFRESH_LIMIT
+        value: "120"
+      - key: RL_SESSION_ANSWERS_LIMIT
+        value: "120"
+      - key: RL_MATCH_ACCEPT_LIMIT
+        value: "100"
+      - key: RL_MATCH_DECLINE_LIMIT
+        value: "100"
+      - key: RL_MATCH_FEEDBACK_LIMIT
+        value: "100"
+      - key: RL_WINDOW_SECONDS
+        value: "60"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: ADMIN_BOOTSTRAP_EMAIL
+        value: admin@cbsmatch.local
+      - key: ADMIN_BOOTSTRAP_PASSWORD
+        value: community123
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+
+databases:
+  - name: cbs-match-db
+    plan: starter
+    databaseName: cbs_match
+    user: cbs_match

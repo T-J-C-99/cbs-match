@@ -326,3 +326,35 @@ ADMIN_TOKEN=<staging-admin-token> \
 SMOKE_TENANT_SLUG=cbs \
 ./scripts/staging_preflight.sh
 ```
+
+## Render backend deployment
+
+The repo now includes `render.yaml` for publishing the FastAPI backend and Postgres on Render.
+
+### What Render will create
+
+- `cbs-match-api` web service from `api/Dockerfile`
+- `cbs-match-db` managed Postgres database
+
+### Before first production use
+
+After creating the Blueprint in Render, set these values in the Render web service:
+
+- `CORS_ALLOWED_ORIGINS` = your Vercel frontend URL(s), comma-separated
+  - example: `https://your-vercel-app.vercel.app,https://www.yourdomain.com`
+- `ADMIN_BOOTSTRAP_EMAIL` = admin login email you want to use
+- `ADMIN_BOOTSTRAP_PASSWORD` = strong admin password (replace the default)
+
+Render will generate `JWT_SECRET` and `ADMIN_TOKEN` automatically from `render.yaml`.
+
+### After backend is live
+
+Copy the Render backend URL and add this in Vercel:
+
+- `API_BASE_URL=https://your-render-api.onrender.com`
+
+If any browser-side code must call the API directly, also add:
+
+- `NEXT_PUBLIC_API_BASE_URL=https://your-render-api.onrender.com`
+
+Then redeploy the Vercel frontend.
