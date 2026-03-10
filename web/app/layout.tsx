@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/components/AuthProvider";
 import { getTenantFromRequestCookie } from "@/lib/tenant-server";
 import { tenantCssVars } from "@/lib/theme";
@@ -19,6 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <TenantHeader />
           <main className="min-h-screen">{children}</main>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
