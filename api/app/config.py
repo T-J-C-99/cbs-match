@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any
 
 SURVEY_SLUG = "match-core-v3"
-SURVEY_VERSION = 1
+SURVEY_VERSION = 3
 
 APP_ENV = os.getenv("APP_ENV", "development").strip().lower()
 if APP_ENV == "prod":
