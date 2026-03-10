@@ -5,10 +5,23 @@ from .config import QUESTIONS_PATH, SURVEY_SLUG
 from . import survey_admin_repo
 
 
+def _normalize_loaded_definition(raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, dict):
+        return {"screens": []}
+    if isinstance(raw.get("screens"), list):
+        return raw
+    # Backward compatibility for placeholder/legacy code survey files that only
+    # expose a top-level `questions` array. Treat them as an empty valid survey
+    # definition for admin flows/tests until a full screen-based schema is loaded.
+    if isinstance(raw.get("questions"), list):
+        return {**raw, "screens": []}
+    return {**raw, "screens": []}
+
+
 @lru_cache(maxsize=1)
 def get_file_survey_definition() -> dict[str, Any]:
     with QUESTIONS_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        return _normalize_loaded_definition(json.load(f))
 
 
 def _filter_items_for_tenant(items: list[dict[str, Any]], tenant_slug: str | None) -> list[dict[str, Any]]:

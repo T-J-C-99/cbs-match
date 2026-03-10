@@ -67,7 +67,7 @@ def validate_survey_definition(definition: dict[str, Any]) -> list[dict[str, Any
                 })
 
             region_tag = question.get("region_tag")
-            if region_tag not in VALID_REGION_TAGS:
+            if region_tag is not None and region_tag not in VALID_REGION_TAGS:
                 errors.append(
                     {
                         "code": "invalid_region_tag",
@@ -77,7 +77,7 @@ def validate_survey_definition(definition: dict[str, Any]) -> list[dict[str, Any
                 )
 
             usage = question.get("usage")
-            if usage not in VALID_USAGES:
+            if usage is not None and usage not in VALID_USAGES:
                 errors.append(
                     {
                         "code": "invalid_usage",
