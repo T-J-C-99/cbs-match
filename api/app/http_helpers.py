@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import uuid
 from pathlib import Path
@@ -9,6 +10,10 @@ from fastapi import HTTPException, Request, UploadFile
 
 UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+
+# Explicit public base URL for generating photo URLs (e.g. https://cbs-match-api.onrender.com).
+# Falls back to request.base_url when not set (requires --proxy-headers on uvicorn).
+_PUBLIC_API_URL = os.getenv("PUBLIC_API_URL", "").strip().rstrip("/")
 
 
 def normalize_email(email: str) -> str:
@@ -40,7 +45,8 @@ def validate_registration_input(email: str, password: str) -> tuple[str, str]:
 
 
 def public_upload_url(request: Request, filename: str) -> str:
-    return f"{str(request.base_url).rstrip('/')}/uploads/{filename}"
+    base = _PUBLIC_API_URL or str(request.base_url).rstrip("/")
+    return f"{base}/uploads/{filename}"
 
 
 async def store_uploaded_photo(file: UploadFile, owner_user_id: str, request: Request) -> str:
