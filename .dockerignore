@@ -1,0 +1,32 @@
+# Python virtual environments
+api/.venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Test files
+api/tests/
+api/pytest.ini
+
+# Local dev DB and uploads
+api/cbs_match_dev.db
+api/uploads/
+
+# Node / web frontend
+web/
+node_modules/
+
+# Scripts and notebooks (not needed in the API image)
+scripts/
+CBS_Match_Python_WOW.ipynb
+
+# Git
+.git
+.gitignore
+
+# Misc
+*.md
+.env
+.env.*
+**/.DS_Store
