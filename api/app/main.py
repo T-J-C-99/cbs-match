@@ -333,17 +333,11 @@ def repo_complete_session(session_id: str, survey_def: dict[str, Any]) -> dict[s
             {"id": session_id, "survey_hash": survey_hash},
         )
 
-        reconcile_user_survey_to_current(
-            db,
-            user_id=str(session_row["user_id"]),
-            tenant_id=str(session_row.get("tenant_id")) if session_row.get("tenant_id") else None,
-        )
-        status = get_user_survey_status(
-            db,
-            user_id=str(session_row["user_id"]),
-            tenant_id=str(session_row.get("tenant_id")) if session_row.get("tenant_id") else None,
-        )
-        answers_effective = status.get("answers_current") if isinstance(status.get("answers_current"), dict) else answers
+        # For session completion, compute traits directly from the submitted session
+        # answers. Reconciliation state is useful for partial/incremental flows, but
+        # using it here can incorrectly mark conditional required questions as missing
+        # before the final answer set is fully materialized in state.
+        answers_effective = answers
         traits = compute_traits(survey_def, answers_effective)
 
         big5 = (traits or {}).get("big5") or (traits or {}).get("big_five") or {}
