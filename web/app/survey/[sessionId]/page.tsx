@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
+import { SurveySkeleton } from "@/components/SkeletonFrames";
 import {
   computeCompletion,
   nextScreenIndex,
@@ -164,7 +165,7 @@ function SurveyInner() {
     setScreenIndex((v) => Math.max(0, v - 1));
   };
 
-  if (loading) return <div className="mx-auto max-w-3xl p-6">Loading...</div>;
+  if (loading) return <SurveySkeleton />;
   if (error && !survey) return <div className="mx-auto max-w-3xl p-6 text-red-700">{error}</div>;
   if (!screen || !survey) return <div className="mx-auto max-w-3xl p-6">No visible screens.</div>;
 

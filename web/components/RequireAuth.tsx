@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { apiGet, formatError } from "@/lib/apiClient";
+import { AuthGateSkeleton } from "@/components/SkeletonFrames";
 
 type GuardState = {
   checked: boolean;
@@ -104,7 +105,7 @@ export default function RequireAuth({
     blockedForSurvey ||
     blockedForProfile
   ) {
-    return <div className="mx-auto max-w-2xl p-6">Loading...</div>;
+    return <AuthGateSkeleton />;
   }
 
   return <>{children}</>;

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
+import { PageShellSkeleton } from "@/components/SkeletonFrames";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
@@ -73,7 +74,7 @@ function WelcomeInner() {
   };
 
   if (loading) {
-    return <div className="mx-auto max-w-2xl p-6">Loading...</div>;
+    return <PageShellSkeleton />;
   }
 
   return (

@@ -8,6 +8,9 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npm --workspace cbs-match-web run build",
+    "start": "npm --workspace cbs-match-web run start",
+    "dev": "npm --workspace cbs-match-web run dev",
     "dev:up": "bash scripts/dev_up.sh",
     "dev:down": "bash scripts/dev_down.sh",
     "dev:wm": "bash scripts/dev_wm.sh",

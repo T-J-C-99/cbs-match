@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import AppShellNav from "@/components/AppShellNav";
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
+import { PastMatchesSkeleton } from "@/components/SkeletonFrames";
 
 // Simple icon components for contact methods
 function EmailIcon({ className }: { className?: string }) {
@@ -125,7 +126,7 @@ function PastInner() {
       <h1 className="text-3xl font-semibold text-cbs-ink">Past matches</h1>
       <p className="mt-2 text-sm text-cbs-slate">A compact archive of your prior match cycles.</p>
 
-      {loading && <p className="mt-6 text-sm text-cbs-slate">Loading history...</p>}
+      {loading && <PastMatchesSkeleton />}
       {error && <p className="mt-6 rounded bg-red-100 px-3 py-2 text-sm text-red-700">{error}</p>}
 
       {!loading && !error && !items.length && (

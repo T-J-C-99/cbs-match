@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AppShellNav from "@/components/AppShellNav";
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
+import { SkeletonBlock } from "@/components/SkeletonFrames";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
@@ -204,11 +205,39 @@ function SettingsInner() {
       <AppShellNav />
       <h1 className="text-3xl font-semibold text-cbs-ink">Settings</h1>
       <p className="mt-2 text-sm text-cbs-slate">Account and participation preferences.</p>
-      {loading && <p className="mt-2 text-xs text-cbs-slate">Syncing settings…</p>}
 
       {error && <p className="mt-4 rounded bg-red-100 px-3 py-2 text-sm text-red-700">{error}</p>}
       {notice && <p className="mt-4 rounded bg-emerald-100 px-3 py-2 text-sm text-emerald-800">{notice}</p>}
 
+      {loading ? (
+        <div className="mt-6 space-y-6">
+          <section className="rounded-xl border border-cbs-columbia bg-white p-6 shadow-sm">
+            <SkeletonBlock className="h-6 w-40" />
+            <SkeletonBlock className="mt-2 h-4 w-72" />
+            <SkeletonBlock className="mt-4 h-12 w-full" />
+          </section>
+          <section className="rounded-xl border border-cbs-columbia bg-white p-6 shadow-sm">
+            <SkeletonBlock className="h-6 w-32" />
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <SkeletonBlock className="h-12 w-full" />
+              <SkeletonBlock className="h-12 w-full" />
+            </div>
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <SkeletonBlock className="h-16 w-full" />
+              <SkeletonBlock className="h-16 w-full" />
+              <SkeletonBlock className="h-16 w-full" />
+            </div>
+            <SkeletonBlock className="mt-3 h-10 w-56" />
+          </section>
+          <section className="rounded-xl border border-cbs-columbia bg-white p-6 shadow-sm">
+            <SkeletonBlock className="h-6 w-28" />
+            <SkeletonBlock className="mt-3 h-28 w-full" />
+          </section>
+        </div>
+      ) : null}
+
+      {!loading ? (
+      <>
       <section className={`mt-6 rounded-xl border p-6 shadow-sm ${pauseMatches ? "border-amber-300 bg-amber-50" : "border-cbs-columbia bg-white"}`}>
         <h2 className="text-base font-semibold text-cbs-ink">Weekly matching</h2>
         <button
@@ -348,6 +377,8 @@ function SettingsInner() {
           </button>
         </div>
       </section>
+      </>
+      ) : null}
     </div>
   );
 }

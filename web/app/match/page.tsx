@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import RequireAuth from "@/components/RequireAuth";
 import AppShellNav from "@/components/AppShellNav";
 import { useAuth } from "@/components/AuthProvider";
+import { SkeletonBlock } from "@/components/SkeletonFrames";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
@@ -229,6 +230,34 @@ function MatchInner() {
         {payload?.match?.week_start_date ? <p className="text-sm text-cbs-slate">Week of {payload.match.week_start_date}</p> : null}
       </header>
       {error && <p className="mb-4 rounded bg-red-100 px-3 py-2 text-sm text-red-700">{error}</p>}
+
+      {loading ? (
+        <>
+          <section className="mx-auto mt-6 w-full max-w-5xl overflow-hidden rounded-2xl border border-cbs-columbia bg-white shadow-sm">
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(260px,42%)_1fr]">
+              <SkeletonBlock className="h-[360px] w-full" />
+              <div className="space-y-4 p-6">
+                <SkeletonBlock className="h-6 w-40" />
+                <SkeletonBlock className="h-8 w-56" />
+                <SkeletonBlock className="h-4 w-2/3" />
+                <SkeletonBlock className="h-4 w-1/2" />
+                <div className="flex gap-2 pt-2">
+                  <SkeletonBlock className="h-10 w-28 rounded-full" />
+                  <SkeletonBlock className="h-10 w-28 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </section>
+          <section className="mx-auto mt-6 w-full max-w-5xl rounded-xl border border-cbs-columbia bg-white p-5 shadow-sm">
+            <div className="space-y-3">
+              <SkeletonBlock className="h-6 w-56" />
+              <SkeletonBlock className="h-4 w-full" />
+              <SkeletonBlock className="h-4 w-11/12" />
+              <SkeletonBlock className="h-4 w-10/12" />
+            </div>
+          </section>
+        </>
+      ) : null}
 
       {!loading && hasMatch && payload?.match?.matched_profile ? <MatchHero profile={payload.match.matched_profile} /> : null}
 

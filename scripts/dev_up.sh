@@ -5,13 +5,15 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DEV_DIR="$ROOT_DIR/.dev"
 API_BASE_URL="http://127.0.0.1:8000"
 NEXT_PUBLIC_API_BASE_URL="http://localhost:8000"
+LOCAL_DATABASE_URL="${DATABASE_URL:-postgresql+psycopg2://postgres:postgres@127.0.0.1:5432/cbs_match}"
+LOCAL_JWT_SECRET="${JWT_SECRET:-dev-jwt-secret-local-only-change-me}"
 
 # Create .dev directory if it doesn't exist
 mkdir -p "$DEV_DIR"
 
 # Check if API is already healthy
 check_api_health() {
-    curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/survey/active" 2>/dev/null || echo "000"
+    curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/health" 2>/dev/null || echo "000"
 }
 
 # Check if port 8000 is in use
@@ -44,11 +46,11 @@ else
     fi
     
     echo "Starting API on $API_BASE_URL"
-    ( cd "$ROOT_DIR/api"; source .venv/bin/activate; uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 ) > "$DEV_DIR/api.log" 2>&1 &
+    ( cd "$ROOT_DIR/api"; source .venv/bin/activate; DATABASE_URL="$LOCAL_DATABASE_URL" JWT_SECRET="$LOCAL_JWT_SECRET" uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 ) > "$DEV_DIR/api.log" 2>&1 &
     API_PID=$!
     echo $API_PID > "$DEV_DIR/api.pid"
     
-    echo "Waiting for API readiness at /survey/active"
+    echo "Waiting for API readiness at /health"
     for i in {1..60}; do
         HEALTH_CODE=$(check_api_health)
         if [ "$HEALTH_CODE" = "200" ]; then

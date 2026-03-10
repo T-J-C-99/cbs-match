@@ -4,10 +4,65 @@ Pilot-ready questionnaire and weekly matching app.
 
 ## Stack
 
+## Stage 1 deployment hardening
+
+Stage 1 deployment setup (env templates, API startup validation, and required variable checklist) is documented in:
+
+- `DEPLOYMENT_STAGE1.md`
+
+
 - Web: Next.js App Router + TypeScript + Tailwind
 - API: FastAPI + SQLAlchemy
 - DB: Postgres
 - Local runtime: Docker Compose
+
+## GitHub CI
+
+Automated checks run on every push and PR to `main`:
+
+- **API**: Python 3.11 + pip install + pytest
+- **Web**: Node 20 + npm install + lint + jest
+- **Shared**: Node 20 + npm install + vitest
+
+View status: Check the "CI" workflow in the Actions tab on GitHub.
+
+### How to verify build locally
+
+Run the same checks CI runs:
+
+```bash
+# API tests
+cd api && pip install -r requirements.txt && pytest -q
+
+# Web lint and tests
+cd web && npm install && npm run lint && npx jest --config jest.config.ts --runInBand
+
+# Shared package tests
+cd packages/shared && npm install && npm test
+```
+
+## Smoke Test (Docker Compose)
+
+Verify the full stack boots and responds:
+
+```bash
+./scripts/smoke_compose.sh
+```
+
+This will:
+1. Create a placeholder `questions.json` if missing
+2. Run `docker compose up -d --build`
+3. Wait up to 120s for API at `http://localhost:8000/health`
+4. Wait up to 120s for Web at `http://localhost:3000`
+5. Report success or show logs on failure
+
+Cleanup after testing:
+
+```bash
+./scripts/smoke_compose.sh cleanup
+# or
+docker compose down
+```
 
 ## Test It Yourself (local, no Docker)
 
@@ -117,7 +172,7 @@ uvicorn app.main:app --reload --port 8000
 ```bash
 cd /Users/thomascline/Desktop/cbs-match/web
 npm install
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 NEXT_PUBLIC_ADMIN_TOKEN=dev-admin-token npm run dev
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 ADMIN_TOKEN=dev-admin-token npm run dev
 ```
 
 ## Seed dummy data
@@ -252,3 +307,22 @@ EXPO_PUBLIC_API_BASE_URL=http://localhost:8000
 ```
 
 The app stores `user_id` in SecureStore and sends it in `X-User-Id` headers for development auth.
+
+
+## Stage 2 staging deployment
+
+Use the Stage 2 runbook and smoke scripts:
+
+- `DEPLOYMENT_STAGE2.md`
+- `scripts/staging_preflight.sh`
+- `scripts/smoke_staging.py`
+
+Example:
+
+```bash
+cd /Users/thomascline/Desktop/cbs-match
+API_BASE_URL=https://api-staging.example.com \
+ADMIN_TOKEN=<staging-admin-token> \
+SMOKE_TENANT_SLUG=cbs \
+./scripts/staging_preflight.sh
+```

@@ -23,3 +23,25 @@ body {
 .cbs-page-shell {
   @apply mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8;
 }
+
+.cbs-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #dbe4ef;
+}
+
+.cbs-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: cbs-skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes cbs-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

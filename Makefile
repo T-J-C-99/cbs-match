@@ -12,3 +12,9 @@ test:
 
 match:
 	curl -s -X POST http://localhost:8000/admin/matches/run-weekly -H "X-Admin-Token: dev-admin-token"
+
+stage2-preflight:
+	./scripts/staging_preflight.sh
+
+stage2-smoke:
+	python scripts/smoke_staging.py

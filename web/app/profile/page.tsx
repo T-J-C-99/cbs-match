@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AppShellNav from "@/components/AppShellNav";
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
+import { SkeletonBlock } from "@/components/SkeletonFrames";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 const GENDER_OPTIONS = ["man", "woman", "nonbinary", "other"] as const;
@@ -550,7 +551,6 @@ function ProfileInner() {
 
       <h1 className="text-3xl font-semibold text-cbs-ink">Your profile</h1>
       <p className="mt-2 text-sm text-cbs-slate">Preview your card first, then edit when you’re ready.</p>
-      {loading && <p className="mt-2 text-xs text-cbs-slate">Syncing profile…</p>}
 
       {requiredFlow && missingFields.length > 0 && (
         <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
@@ -562,6 +562,34 @@ function ProfileInner() {
       {error && <p className="mt-4 rounded bg-red-100 px-3 py-2 text-sm text-red-700">{error}</p>}
       {notice && <p className="mt-4 rounded bg-emerald-100 px-3 py-2 text-sm text-emerald-800">{notice}</p>}
 
+      {loading ? (
+        <div className="mx-auto mt-6 w-full max-w-5xl space-y-4 rounded-xl border border-cbs-columbia bg-white p-6 shadow-sm">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-6">
+            <div className="rounded-xl border border-cbs-columbia/50 p-4 lg:max-w-[390px] lg:justify-self-start">
+              <SkeletonBlock className="h-4 w-28" />
+              <SkeletonBlock className="mt-3 aspect-[4/5] w-full" />
+              <SkeletonBlock className="mt-4 h-8 w-44" />
+              <SkeletonBlock className="mt-2 h-4 w-56" />
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <SkeletonBlock className="h-4 w-40" />
+              <div className="mt-3 grid grid-cols-5 gap-2">
+                <SkeletonBlock className="h-16" />
+                <SkeletonBlock className="h-16" />
+                <SkeletonBlock className="h-16" />
+                <SkeletonBlock className="h-16" />
+                <SkeletonBlock className="h-16" />
+              </div>
+              <div className="mt-4 space-y-2">
+                <SkeletonBlock className="h-4 w-full" />
+                <SkeletonBlock className="h-4 w-11/12" />
+                <SkeletonBlock className="h-4 w-10/12" />
+              </div>
+            </div>
+          </div>
+          <SkeletonBlock className="h-10 w-36" />
+        </div>
+      ) : (
       <div className="mx-auto mt-6 w-full max-w-5xl space-y-4 rounded-xl border border-cbs-columbia bg-white p-6 shadow-sm">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-6">
           <div className="rounded-xl border border-cbs-columbia/50 p-4 lg:max-w-[390px] lg:justify-self-start">
@@ -883,6 +911,7 @@ function ProfileInner() {
           </>
         )}
       </div>
+      )}
     </div>
   );
 }

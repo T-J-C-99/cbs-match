@@ -57,4 +57,6 @@ htmlcov/
 # Env files (security)
 .env
 .env.*
-!.env.exampleweb/WIP_pre_cleanbase.patch
+!.env.example
+# Local patch archives
+web/WIP_pre_cleanbase.patch

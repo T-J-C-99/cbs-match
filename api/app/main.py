@@ -14,6 +14,7 @@ from sqlalchemy.exc import OperationalError
 
 from .config import (
     ADMIN_TOKEN,
+    CORS_ALLOWED_ORIGINS,
     DEFAULT_MATCHING_CONFIG,
     LOOKBACK_WEEKS,
     MATCH_ALGO_MODE,
@@ -28,6 +29,7 @@ from .config import (
     RL_WINDOW_SECONDS,
     SURVEY_SLUG,
     SURVEY_VERSION,
+    validate_runtime_config,
 )
 from .database import SessionLocal
 from .services.calibration import compute_calibration_report
@@ -74,18 +76,9 @@ UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 
-# CORS configuration - specific origins required for credentials: "include"
-# Cannot use wildcard "*" with credentials mode
-ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3001",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=CORS_ALLOWED_ORIGINS,
     allow_credentials=True,  # Required for cookie-based auth
     allow_methods=["*"],
     allow_headers=["*"],
@@ -141,6 +134,7 @@ def wait_for_db(max_attempts: int = 20, delay_seconds: float = 1.5) -> None:
 
 @app.on_event("startup")
 def on_startup() -> None:
+    validate_runtime_config()
     wait_for_db()
     run_migrations()
     with SessionLocal() as db:
