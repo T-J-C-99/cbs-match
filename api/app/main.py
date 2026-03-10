@@ -63,7 +63,12 @@ from .deps import tenant_context_from_user as _tenant_context_from_user
 from .deps import tenant_id_from_user as _tenant_id_from_user
 from .deps import validate_admin_token as _validate_admin_token_impl
 from .routes import include_modular_routers
-from .survey_loader import get_file_survey_definition, get_survey_definition, is_placeholder_survey_definition
+from .survey_loader import (
+    get_file_survey_definition,
+    get_survey_definition,
+    is_default_fallback_survey_definition,
+    is_placeholder_survey_definition,
+)
 from . import survey_admin_repo
 from .traits import compute_traits
 from . import repo as auth_repo
@@ -151,7 +156,11 @@ def on_startup() -> None:
             version=SURVEY_VERSION,
             definition_json=code_definition,
         )
-    elif is_placeholder_survey_definition(active.get("definition_json")) and not is_placeholder_survey_definition(code_definition):
+    elif (
+        (is_placeholder_survey_definition(active.get("definition_json")) or is_default_fallback_survey_definition(active.get("definition_json")))
+        and not is_placeholder_survey_definition(code_definition)
+        and not is_default_fallback_survey_definition(code_definition)
+    ):
         survey_admin_repo.initialize_active_from_code(
             slug=SURVEY_SLUG,
             definition_json=code_definition,

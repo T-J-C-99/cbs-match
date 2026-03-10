@@ -135,6 +135,27 @@ def is_placeholder_survey_definition(definition: Any) -> bool:
     return not isinstance(screens, list) or len(screens) == 0
 
 
+def is_default_fallback_survey_definition(definition: Any) -> bool:
+    if not isinstance(definition, dict):
+        return False
+    survey = definition.get("survey") if isinstance(definition.get("survey"), dict) else {}
+    if survey.get("name") != DEFAULT_SURVEY_DEFINITION["survey"]["name"]:
+        return False
+    screens = definition.get("screens")
+    if not isinstance(screens, list) or len(screens) != len(DEFAULT_SURVEY_DEFINITION["screens"]):
+        return False
+    codes: list[str] = []
+    for screen in screens:
+        if not isinstance(screen, dict):
+            continue
+        for item in screen.get("items", []) if isinstance(screen.get("items"), list) else []:
+            if isinstance(item, dict) and isinstance(item.get("question"), dict):
+                code = str(item["question"].get("code") or "").strip()
+                if code:
+                    codes.append(code)
+    return sorted(codes) == sorted(["CONSENT", "OPENNESS", "CONSCIENTIOUSNESS", "EXTRAVERSION_PAIR"])
+
+
 def _normalize_loaded_definition(raw: Any) -> dict[str, Any]:
     if not isinstance(raw, dict):
         return DEFAULT_SURVEY_DEFINITION.copy()
@@ -196,7 +217,12 @@ def get_survey_definition(tenant_slug: str | None = None) -> dict[str, Any]:
         active = survey_admin_repo.get_active_definition(SURVEY_SLUG)
     except Exception:
         active = None
-    if active and isinstance(active.get("definition_json"), dict) and not is_placeholder_survey_definition(active.get("definition_json")):
+    if (
+        active
+        and isinstance(active.get("definition_json"), dict)
+        and not is_placeholder_survey_definition(active.get("definition_json"))
+        and not is_default_fallback_survey_definition(active.get("definition_json"))
+    ):
         return filter_survey_for_tenant(active["definition_json"], tenant_slug)
     return filter_survey_for_tenant(get_file_survey_definition(), tenant_slug)
 
