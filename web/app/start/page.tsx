@@ -5,15 +5,13 @@ import { useRouter } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
 function StartInner() {
   const router = useRouter();
   const { fetchWithAuth } = useAuth();
 
   useEffect(() => {
     const decide = async () => {
-      const res = await fetchWithAuth(`${API_BASE}/users/me/state`);
+      const res = await fetchWithAuth(`/api/users/me/state`);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         router.replace("/welcome");

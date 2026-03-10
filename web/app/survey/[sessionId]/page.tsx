@@ -17,8 +17,6 @@ import {
   type SurveySchema,
 } from "@cbs-match/shared";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
 function SurveyInner() {
   const params = useParams<{ sessionId: string }>();
   const router = useRouter();
@@ -42,8 +40,8 @@ function SurveyInner() {
     const load = async () => {
       try {
         const [surveyRes, sessionRes] = await Promise.all([
-          fetchWithAuth(`${API_BASE}/survey/active`),
-          fetchWithAuth(`${API_BASE}/sessions/${sessionId}`),
+          fetchWithAuth(`/api/survey/active`),
+          fetchWithAuth(`/api/sessions/${sessionId}`),
         ]);
         if (!surveyRes.ok || !sessionRes.ok) throw new Error("Failed to load survey");
 
@@ -121,7 +119,7 @@ function SurveyInner() {
 
     setSaving(true);
     try {
-      const res = await fetchWithAuth(`${API_BASE}/sessions/${sessionId}/answers`, {
+      const res = await fetchWithAuth(`/api/sessions/${sessionId}/answers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -149,7 +147,7 @@ function SurveyInner() {
       return;
     }
 
-    const completeRes = await fetchWithAuth(`${API_BASE}/sessions/${sessionId}/complete`, {
+    const completeRes = await fetchWithAuth(`/api/sessions/${sessionId}/complete`, {
       method: "POST",
     });
     if (!completeRes.ok) {

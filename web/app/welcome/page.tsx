@@ -6,8 +6,6 @@ import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
 import { PageShellSkeleton } from "@/components/SkeletonFrames";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
 type UserState = {
   onboarding: {
     has_any_session: boolean;
@@ -33,7 +31,7 @@ function WelcomeInner() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await fetchWithAuth(`${API_BASE}/users/me/state`);
+        const res = await fetchWithAuth(`/api/users/me/state`);
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.detail || "Could not load user state");
         setState(data);
@@ -62,7 +60,7 @@ function WelcomeInner() {
         router.push(`/survey/${state.onboarding.active_session_id}`);
         return;
       }
-      const res = await fetchWithAuth(`${API_BASE}/sessions`, { method: "POST" });
+      const res = await fetchWithAuth(`/api/sessions`, { method: "POST" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.detail || "Could not create session");
       router.push(`/survey/${data.session_id}`);
