@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const proxied = await safeProxyJson(async () => {
     const res = await fetch(`${apiBaseUrl()}/auth/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", ...(await tenantHeader()) },
+      headers: { "Content-Type": "application/json", "X-Auth-Mode": "bearer", ...(await tenantHeader()) },
       body,
     });
     data = await res.json().catch(() => ({}));

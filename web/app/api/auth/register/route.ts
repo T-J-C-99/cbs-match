@@ -10,12 +10,12 @@ export async function POST(req: Request) {
     const res = contentType.includes("multipart/form-data")
       ? await fetch(`${apiBaseUrl()}/auth/register`, {
           method: "POST",
-          headers: { ...(await tenantHeader()) },
+          headers: { "X-Auth-Mode": "bearer", ...(await tenantHeader()) },
           body: await req.formData(),
         })
       : await fetch(`${apiBaseUrl()}/auth/register`, {
           method: "POST",
-          headers: { "Content-Type": "application/json", ...(await tenantHeader()) },
+          headers: { "Content-Type": "application/json", "X-Auth-Mode": "bearer", ...(await tenantHeader()) },
           body: await req.text(),
         });
     data = await res.json().catch(() => ({}));
