@@ -1,1 +1,1296 @@
-{"questions":[]}
+{
+  "survey": {
+    "slug": "match-core-v3",
+    "version": 1,
+    "name": "Match Core v3",
+    "status": "draft",
+    "estimated_minutes": 10,
+    "created_at": "2026-02-17"
+  },
+  "option_sets": {
+    "likert_1_5_agree": [
+      { "value": 1, "label": "Strongly disagree" },
+      { "value": 2, "label": "Disagree" },
+      { "value": 3, "label": "Neutral" },
+      { "value": 4, "label": "Agree" },
+      { "value": 5, "label": "Strongly agree" }
+    ],
+    "forced_choice_ab": [
+      { "value": "A", "label": "A" },
+      { "value": "B", "label": "B" }
+    ]
+  },
+  "screens": [
+    {
+      "key": "core_personality",
+      "ordinal": 1,
+      "title": "You, broadly",
+      "subtitle": "Quick taps. Answer how you actually are.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "OPN_01",
+            "text": "I actively seek new intellectual or cultural experiences.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "OPN_02",
+            "text": "I prefer familiarity over novelty.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "OPN_03",
+            "text": "I enjoy complex ideas and debate.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "CON_01",
+            "text": "I follow through on commitments reliably.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "CON_02",
+            "text": "I plan my time deliberately.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "CON_03",
+            "text": "I perform best when my schedule is loosely structured.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "EXT_01",
+            "text": "Social settings energize me.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "EXT_02",
+            "text": "I am comfortable initiating conversations.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "EXT_03",
+            "text": "I prefer intimate settings to large gatherings.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "AGR_01",
+            "text": "I prioritize mutual understanding in disagreements.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "AGR_02",
+            "text": "I can be blunt even if it stings.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "AGR_03",
+            "text": "I assume good intent until proven otherwise.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "ER_01",
+            "text": "I stay composed in tense situations.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ER_02",
+            "text": "I replay conflicts long after they happen.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ER_03",
+            "text": "When I feel dismissed, my emotional response is intense.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        }
+      ]
+    },
+
+    {
+      "key": "conflict_repair_v3",
+      "ordinal": 2,
+      "title": "Conflict and repair",
+      "subtitle": "How you handle friction when it is real.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "REP_01",
+            "text": "I prefer addressing tension quickly.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_02",
+            "text": "After conflict, I usually need time alone before discussing it.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_03",
+            "text": "I can apologize even when I think I am partly right.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_04",
+            "text": "I escalate when I feel unheard.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_05",
+            "text": "I withdraw when conflict becomes heated.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_06",
+            "text": "I cool down quickly after conflict.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_07",
+            "text": "I believe most issues can be repaired with effort.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_08",
+            "text": "After conflict, I need the other person to clearly acknowledge their role before I can move on.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_09",
+            "text": "I sometimes avoid raising issues to prevent conflict.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_10",
+            "text": "I say things I regret when I am upset.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "scenario",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_11",
+            "text": "In difficult conversations, I prefer clear turn-taking and defined topics.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "REP_12",
+            "text": "When disagreements are resolved constructively, my trust increases.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        }
+      ]
+    },
+
+    {
+      "key": "attachment_communication_v3",
+      "ordinal": 3,
+      "title": "Closeness and communication",
+      "subtitle": "What feels good day to day.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "ATT_01",
+            "text": "I am comfortable with emotional vulnerability.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_02",
+            "text": "In close relationships, I often need verbal reassurance of care and commitment.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_03",
+            "text": "If a partner goes most of a day without responding, I feel uneasy.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_04",
+            "text": "Independence remains important to me even in commitment.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_05",
+            "text": "I tend to extend trust early in relationships.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_06",
+            "text": "Daily communication feels natural to me.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_07",
+            "text": "I require meaningful alone time each week.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_08",
+            "text": "I prefer steady emotional consistency over dramatic highs and lows.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "ATT_09",
+            "text": "I sometimes create distance to test how invested the other person is.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        }
+      ]
+    },
+
+    {
+      "key": "life_architecture_v3",
+      "ordinal": 4,
+      "title": "Life architecture",
+      "subtitle": "Goals and constraints that matter.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "KIDS_01",
+            "text": "Do you see children in your future?",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "probably", "label": "Probably" },
+            { "value": "unsure", "label": "Unsure" },
+            { "value": "probably_not", "label": "Probably not" },
+            { "value": "no", "label": "No" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "KIDS_02",
+            "text": "If you do want children, what timeline fits you best?",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "0_3_years", "label": "0 to 3 years" },
+            { "value": "3_7_years", "label": "3 to 7 years" },
+            { "value": "later", "label": "Later than 7 years" },
+            { "value": "open", "label": "Open to different timelines" }
+          ],
+          "rules": [
+            {
+              "type": "show_if",
+              "trigger_question_code": "KIDS_01",
+              "operator": "in",
+              "trigger_value": ["yes", "probably"]
+            }
+          ]
+        },
+        {
+          "question": {
+            "code": "KIDS_03",
+            "text": "Shared views on having children are essential for a long-term partnership.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "LOC_01",
+            "text": "I would relocate for the right partner.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "CAR_01",
+            "text": "I expect my career to require consistently long work hours.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "CAR_02",
+            "text": "I want a partner who prioritizes professional achievement.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "MAR_01",
+            "text": "I intend to be married at some point in my life.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "MAR_02",
+            "text": "I prefer defining long-term intentions within the first year of dating.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "MAR_03",
+            "text": "I am comfortable dating for a long time before defining the relationship.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "VAL_01",
+            "text": "Shared core moral and lifestyle values are essential for long-term compatibility.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "VAL_02",
+            "text": "Alignment in religious or philosophical worldview is important to me.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": true,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "VAL_03",
+            "text": "I am comfortable building a serious relationship with someone whose worldview differs from mine.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": true,
+            "ui_hint": "sensitive",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        }
+      ]
+    },
+
+    {
+      "key": "lifestyle_finance_v3",
+      "ordinal": 5,
+      "title": "Lifestyle and money",
+      "subtitle": "Where daily life either works or grinds.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "SOC_01",
+            "text": "My ideal weekend includes multiple social commitments.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "SOC_02",
+            "text": "In most cases, I prefer hosting at home rather than going out.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "SOC_03",
+            "text": "I feel energized in busy social environments.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "STR_01",
+            "text": "I prefer predictable routines.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "STR_02",
+            "text": "I enjoy spontaneous plans.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "HOME_01",
+            "text": "Cleanliness standards matter a lot to me.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "HOME_02",
+            "text": "I prefer a quiet and low-conflict home environment.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "HOME_03",
+            "text": "I enjoy spending time together while each person does their own activity.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+
+        {
+          "question": {
+            "code": "FIN_01",
+            "text": "I actively monitor my spending on a regular basis.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FIN_02",
+            "text": "I am comfortable taking investment or business risks with my money.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FIN_03",
+            "text": "I am uncomfortable being financially dependent on a partner.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": true,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FIN_04",
+            "text": "In a long-term partnership, I prefer fully shared finances.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "sensitive",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FIN_05",
+            "text": "I would rather save aggressively than upgrade my lifestyle.",
+            "response_type": "likert_1_5",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "default",
+            "reverse_coded": false,
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": "likert_1_5_agree",
+          "rules": []
+        }
+      ]
+    },
+
+    {
+      "key": "tradeoffs_v3",
+      "ordinal": 6,
+      "title": "Tradeoffs",
+      "subtitle": "Pick the one that feels more like you.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "FC_01",
+            "text": "Choose one: A Stability and predictability. B Adventure and novelty.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Stability and predictability" },
+            { "value": "B", "label": "B: Adventure and novelty" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FC_02",
+            "text": "Choose one: A Deep one-on-one connection. B Large group social energy.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Deep one-on-one connection" },
+            { "value": "B", "label": "B: Large group social energy" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FC_03",
+            "text": "Choose one: A Consistent emotional steadiness. B Big emotional highs and lows.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Consistent emotional steadiness" },
+            { "value": "B", "label": "B: Big emotional highs and lows" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FC_04",
+            "text": "Choose one: A Address issues immediately and directly. B Ease into difficult conversations gradually.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Address issues immediately and directly" },
+            { "value": "B", "label": "B: Ease into difficult conversations gradually" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FC_05",
+            "text": "Choose one: A Define intentions early. B Let it unfold before defining it.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Define intentions early" },
+            { "value": "B", "label": "B: Let it unfold before defining it" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FC_06",
+            "text": "Choose one: A Frequent communication. B Spacious independence.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Frequent communication" },
+            { "value": "B", "label": "B: Spacious independence" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FC_07",
+            "text": "Choose one: A Prioritize career advancement. B Prioritize relationship stability.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Prioritize career advancement" },
+            { "value": "B", "label": "B: Prioritize relationship stability" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "FC_08",
+            "text": "Choose one: A Save aggressively. B Spend more for quality of life.",
+            "response_type": "forced_choice_pair",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "SCORING"
+          },
+          "options": [
+            { "value": "A", "label": "A: Save aggressively" },
+            { "value": "B", "label": "B: Spend more for quality of life" }
+          ],
+          "rules": []
+        }
+      ]
+    },
+
+    {
+      "key": "vibe_copy_only",
+      "ordinal": 7,
+      "title": "Vibe",
+      "subtitle": "Used for icebreakers, not scoring.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "VIBE_01",
+            "text": "Ideal first date",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "COPY_ONLY"
+          },
+          "options": [
+            { "value": "coffee_walk", "label": "Coffee and a long walk" },
+            { "value": "cocktail_bar", "label": "Cocktails and people-watching" },
+            { "value": "museum_activity", "label": "Museum, gallery, or a show" },
+            { "value": "dinner_reservation", "label": "Dinner somewhere intentional" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "VIBE_02",
+            "text": "How you decompress after a stressful week",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "COPY_ONLY"
+          },
+          "options": [
+            { "value": "quiet_recharge", "label": "Quiet reset" },
+            { "value": "workout_reset", "label": "Workout and structure" },
+            { "value": "social_dinner", "label": "Dinner with friends" },
+            { "value": "spontaneous_adventure", "label": "Do something spontaneous" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "VIBE_03",
+            "text": "Your communication style",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "COPY_ONLY"
+          },
+          "options": [
+            { "value": "direct_clear", "label": "Direct and clear" },
+            { "value": "warm_checkins", "label": "Warm check-ins" },
+            { "value": "playful_banter", "label": "Playful banter" },
+            { "value": "low_text_high_presence", "label": "Low text, high presence" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "VIBE_04",
+            "text": "Best spontaneous plan",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "GLOBAL",
+            "usage": "COPY_ONLY"
+          },
+          "options": [
+            { "value": "late_reservation", "label": "Find a late reservation" },
+            { "value": "last_minute_trip", "label": "Last-minute overnight trip" },
+            { "value": "friends_drop_in", "label": "Friends drop-in night" },
+            { "value": "low_key_detour", "label": "Low-key detour and see where it goes" }
+          ],
+          "rules": []
+        }
+      ]
+    },
+
+    {
+      "key": "cbs_module_copy_only",
+      "ordinal": 8,
+      "title": "CBS and NYC",
+      "subtitle": "Used for icebreakers. Ignored by scoring so we can swap for other schools.",
+      "ui_layout": "grouped",
+      "items": [
+        {
+          "question": {
+            "code": "CBS_01",
+            "text": "Favorite campus spot",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "CBS_NYC",
+            "usage": "COPY_ONLY"
+          },
+          "options": [
+            { "value": "uris_steps", "label": "Uris steps" },
+            { "value": "kravis_lounge", "label": "Kravis lounge" },
+            { "value": "manhattanville_walk", "label": "A walk around Manhattanville" },
+            { "value": "riverside_park", "label": "Riverside Park" }
+          ],
+          "rules": []
+        },
+        {
+          "question": {
+            "code": "CBS_02",
+            "text": "Typical post-class plan",
+            "response_type": "single_select",
+            "is_required": true,
+            "allow_skip": false,
+            "ui_hint": "playful",
+            "region_tag": "CBS_NYC",
+            "usage": "COPY_ONLY"
+          },
+          "options": [
+            { "value": "library_work", "label": "Library or catch-up work" },
+            { "value": "gym_reset", "label": "Gym reset" },
+            { "value": "dinner_with_friends", "label": "Dinner with friends" },
+            { "value": "early_night", "label": "Early night" }
+          ],
+          "rules": []
+        }
+      ]
+    }
+  ]
+}
