@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { apiBaseUrl, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
+import { apiBaseUrl, authCookieOptions, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
 
 async function callMe(accessToken: string) {
   return fetch(`${apiBaseUrl()}/auth/me`, {
@@ -21,13 +21,7 @@ async function refreshFromCookie() {
   if (!res.ok || !data.access_token) return null;
 
   if (data.refresh_token) {
-    (await cookies()).set(REFRESH_COOKIE, data.refresh_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    (await cookies()).set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
   }
 
   return String(data.access_token);

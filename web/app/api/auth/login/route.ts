@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { apiBaseUrl, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
+import { apiBaseUrl, authCookieOptions, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
 import { safeProxyJson } from "@/lib/route-proxy";
 
 export async function POST(req: Request) {
@@ -24,13 +24,7 @@ export async function POST(req: Request) {
 
   const refreshToken = data.refresh_token;
   if (refreshToken) {
-    (await cookies()).set(REFRESH_COOKIE, refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    (await cookies()).set(REFRESH_COOKIE, refreshToken, authCookieOptions());
   }
 
   // Fetch user data with the new token

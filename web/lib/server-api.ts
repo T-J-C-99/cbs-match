@@ -1,7 +1,18 @@
 import { cookies } from "next/headers";
 import { TENANT_COOKIE } from "@/lib/tenant";
+import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export const REFRESH_COOKIE = "cbs_refresh_token";
+
+export function authCookieOptions(): Partial<ResponseCookie> {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  };
+}
 
 export function apiBaseUrl() {
   const url = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
