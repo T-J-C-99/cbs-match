@@ -435,14 +435,16 @@ def update_notification_preferences(payload: dict[str, Any], current_user: dict[
 
 @router.get("/users/me/vibe-card")
 def get_my_vibe_card(current_user: dict[str, Any] = Depends(require_verified_user)) -> dict[str, Any]:
-    row = auth_repo.get_saved_user_vibe_card(
-        str(current_user["id"]),
-        survey_slug=SURVEY_SLUG,
-        survey_version=SURVEY_VERSION,
-    ) or auth_repo.get_latest_user_vibe_card(
-        str(current_user["id"]),
-        survey_slug=SURVEY_SLUG,
-        survey_version=SURVEY_VERSION,
+    tenant_slug = current_user.get("tenant_slug")
+    runtime = get_active_survey_runtime(tenant_slug)
+    active_slug = str(runtime.get("slug") or SURVEY_SLUG)
+    active_version = int(runtime.get("version") or SURVEY_VERSION)
+
+    # Try active runtime version first, then fall back to any card for this user.
+    row = (
+        auth_repo.get_saved_user_vibe_card(str(current_user["id"]), survey_slug=active_slug, survey_version=active_version)
+        or auth_repo.get_latest_user_vibe_card(str(current_user["id"]), survey_slug=active_slug, survey_version=active_version)
+        or auth_repo.get_latest_user_vibe_card(str(current_user["id"]))
     )
     if not row:
         raise HTTPException(status_code=404, detail="Vibe card not found")
@@ -452,7 +454,7 @@ def get_my_vibe_card(current_user: dict[str, Any] = Depends(require_verified_use
             event_name="vibe_card_viewed",
             user_id=str(current_user["id"]),
             tenant_id=_tenant_id_from_user(current_user),
-            properties={"survey_slug": SURVEY_SLUG, "survey_version": SURVEY_VERSION},
+            properties={"survey_slug": active_slug, "survey_version": active_version},
         )
         db.commit()
     return {
