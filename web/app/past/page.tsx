@@ -42,8 +42,6 @@ function CheckIcon({ className }: { className?: string }) {
   );
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
 type HistoryItem = {
   week_start_date: string;
   status: string;
@@ -89,8 +87,8 @@ function PastInner() {
       setLoading(true);
       try {
         const [historyRes, currentRes] = await Promise.all([
-          fetchWithAuth(`${API_BASE}/matches/history?limit=30`),
-          fetchWithAuth(`${API_BASE}/matches/current`),
+          fetchWithAuth(`/api/matches/history?limit=30`),
+          fetchWithAuth(`/api/matches/current`),
         ]);
 
         const historyData = await historyRes.json().catch(() => ({}));

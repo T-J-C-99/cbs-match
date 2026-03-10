@@ -6,8 +6,6 @@ import AppShellNav from "@/components/AppShellNav";
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
 import { SkeletonBlock } from "@/components/SkeletonFrames";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 const GENDER_OPTIONS = ["man", "woman", "nonbinary", "other"] as const;
 
 const PHOTO_FRAME_ASPECT = 4 / 5;
@@ -111,8 +109,8 @@ function ProfileInner() {
     setError(null);
     try {
       const [profileRes, stateRes] = await Promise.all([
-        fetchWithAuth(`${API_BASE}/users/me/profile`),
-        fetchWithAuth(`${API_BASE}/users/me/state`),
+        fetchWithAuth(`/api/users/me/profile`),
+        fetchWithAuth(`/api/users/me/state`),
       ]);
       const profileData = await profileRes.json().catch(() => ({}));
       const stateData = await stateRes.json().catch(() => ({}));
@@ -174,17 +172,17 @@ function ProfileInner() {
       setInsightsLoading(true);
       setInsightsError(null);
       try {
-        const res = await fetchWithAuth(`${API_BASE}/users/me/insights`);
-        if (res.ok) {
-          const data = await res.json();
+        const proxiedRes = await fetchWithAuth(`/api/users/me/insights`);
+        if (proxiedRes.ok) {
+          const data = await proxiedRes.json();
           setOceanScores(data.ocean_scores || null);
           if (!data?.ocean_scores) {
             setInsightsError("Insights returned without OCEAN scores.");
           }
         } else {
-          const data = await res.json().catch(() => ({}));
+          const data = await proxiedRes.json().catch(() => ({}));
           setOceanScores(null);
-          setInsightsError(`Insights request failed (${res.status}): ${data?.detail || "Unknown error"}`);
+          setInsightsError(`Insights request failed (${proxiedRes.status}): ${data?.detail || "Unknown error"}`);
         }
       } catch (e) {
         setOceanScores(null);
@@ -201,7 +199,7 @@ function ProfileInner() {
   useEffect(() => {
     const loadVibe = async () => {
       try {
-        const res = await fetchWithAuth(`${API_BASE}/users/me/vibe-card`);
+        const res = await fetchWithAuth(`/api/users/me/vibe-card`);
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
           setVibeCard(null);
@@ -458,7 +456,7 @@ function ProfileInner() {
       if (action?.mode === "replace") {
         form.append("replace_index", String(action.index));
       }
-      const res = await fetchWithAuth(`${API_BASE}/users/me/profile/photos`, {
+      const res = await fetchWithAuth(`/api/users/me/profile/photos`, {
         method: "POST",
         body: form,
       });
@@ -489,7 +487,7 @@ function ProfileInner() {
     setError(null);
     setNotice(null);
     try {
-      const res = await fetchWithAuth(`${API_BASE}/users/me/profile`, {
+      const res = await fetchWithAuth(`/api/users/me/profile`, {
         method: "PUT",
         body: JSON.stringify({
           display_name: draft.display_name.trim(),
@@ -511,7 +509,7 @@ function ProfileInner() {
         hydrateDraftFromProfile(savedProfile);
       }
 
-      const stateRes = await fetchWithAuth(`${API_BASE}/users/me/state`);
+      const stateRes = await fetchWithAuth(`/api/users/me/state`);
       const stateData = await stateRes.json().catch(() => ({}));
       if (!stateRes.ok) throw new Error(stateData.detail || "Profile saved but state refresh failed");
 

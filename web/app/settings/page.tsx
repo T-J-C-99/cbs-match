@@ -7,8 +7,6 @@ import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
 import { SkeletonBlock } from "@/components/SkeletonFrames";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
 type NotificationPreferences = {
   email_enabled: boolean;
   push_enabled: boolean;
@@ -47,7 +45,7 @@ function SettingsInner() {
     setPauseStatus("Saving...");
     setError(null);
     try {
-      const res = await fetchWithAuth(`${API_BASE}/users/me/preferences`, {
+      const res = await fetchWithAuth(`/api/users/me/preferences`, {
         method: "PUT",
         body: JSON.stringify({ pause_matches: nextValue }),
       });
@@ -69,8 +67,8 @@ function SettingsInner() {
       setLoading(true);
       try {
         const [prefRes, notifRes] = await Promise.all([
-          fetchWithAuth(`${API_BASE}/users/me/preferences`),
-          fetchWithAuth(`${API_BASE}/users/me/notification-preferences`),
+          fetchWithAuth(`/api/users/me/preferences`),
+          fetchWithAuth(`/api/users/me/notification-preferences`),
         ]);
         const data = await prefRes.json().catch(() => ({}));
         const notifData = await notifRes.json().catch(() => ({}));
@@ -105,7 +103,7 @@ function SettingsInner() {
     const confirm2 = window.confirm("Final confirmation: this cannot be undone.");
     if (!confirm2) return;
 
-    const res = await fetchWithAuth(`${API_BASE}/users/me/account`, { method: "DELETE" });
+    const res = await fetchWithAuth(`/api/users/me/account`, { method: "DELETE" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       setError(data.detail || "Could not delete account");
@@ -122,7 +120,7 @@ function SettingsInner() {
       setError("Please enter feedback first.");
       return;
     }
-    const res = await fetchWithAuth(`${API_BASE}/users/me/support/feedback`, {
+    const res = await fetchWithAuth(`/api/users/me/support/feedback`, {
       method: "POST",
       body: JSON.stringify({ message: msg }),
     });
@@ -142,7 +140,7 @@ function SettingsInner() {
       setError("Enter a user ID to block.");
       return;
     }
-    const res = await fetchWithAuth(`${API_BASE}/safety/block`, {
+    const res = await fetchWithAuth(`/api/safety/block`, {
       method: "POST",
       body: JSON.stringify({ blocked_user_id: id }),
     });
@@ -162,7 +160,7 @@ function SettingsInner() {
       setError("Please enter a reason before reporting.");
       return;
     }
-    const res = await fetchWithAuth(`${API_BASE}/safety/report`, {
+    const res = await fetchWithAuth(`/api/safety/report`, {
       method: "POST",
       body: JSON.stringify({ reason }),
     });
@@ -178,7 +176,7 @@ function SettingsInner() {
     setNotifSaving(true);
     setError(null);
     try {
-      const res = await fetchWithAuth(`${API_BASE}/users/me/notification-preferences`, {
+      const res = await fetchWithAuth(`/api/users/me/notification-preferences`, {
         method: "PUT",
         body: JSON.stringify(notifPrefs),
       });

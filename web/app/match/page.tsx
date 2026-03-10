@@ -6,8 +6,6 @@ import AppShellNav from "@/components/AppShellNav";
 import { useAuth } from "@/components/AuthProvider";
 import { SkeletonBlock } from "@/components/SkeletonFrames";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
 type MatchPayload = {
   match: {
     status: string;
@@ -146,7 +144,7 @@ function MatchInner() {
 
   const load = async () => {
     setLoading(true);
-    const res = await fetchWithAuth(`${API_BASE}/matches/current`);
+    const res = await fetchWithAuth(`/api/matches/current`);
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       setError(data.detail || "Failed to load match");
@@ -196,11 +194,11 @@ function MatchInner() {
     if (payload?.feedback?.due_met_question) {
       answers.met = met === "yes";
     }
-    const res = await fetchWithAuth(`${API_BASE}/matches/current/feedback`, {
+    const proxied = await fetchWithAuth(`/api/matches/current/feedback`, {
       method: "POST",
       body: JSON.stringify({ answers }),
     });
-    if (res.ok) {
+    if (proxied.ok) {
       setFeedbackSubmittedFor(matchKey);
       setNotice("Feedback saved.");
       await load();
@@ -209,7 +207,7 @@ function MatchInner() {
 
   const trackContact = async (channel: "email" | "phone" | "instagram") => {
     try {
-      await fetchWithAuth(`${API_BASE}/matches/current/contact-click`, {
+      await fetchWithAuth(`/api/matches/current/contact-click`, {
         method: "POST",
         body: JSON.stringify({ channel }),
       });
