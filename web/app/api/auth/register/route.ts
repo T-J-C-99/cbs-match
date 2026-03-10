@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { apiBaseUrl, authCookieOptions, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
+import { ACCESS_COOKIE, apiBaseUrl, authCookieOptions, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
 import { safeProxyJson } from "@/lib/route-proxy";
 
 export async function POST(req: Request) {
@@ -57,6 +57,12 @@ export async function POST(req: Request) {
 
   if (data.refresh_token) {
     response.cookies.set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
+  }
+  if (data.access_token) {
+    response.cookies.set(ACCESS_COOKIE, String(data.access_token), {
+      ...authCookieOptions(),
+      maxAge: 60 * 60,
+    });
   }
 
   return response;

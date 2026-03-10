@@ -4,6 +4,7 @@ import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import type { NextResponse } from "next/server";
 
 export const REFRESH_COOKIE = "cbs_refresh_token";
+export const ACCESS_COOKIE = "cbs_access_token";
 
 export function authCookieOptions(): Partial<ResponseCookie> {
   return {
@@ -26,6 +27,10 @@ export async function getRefreshTokenFromCookie() {
   return (await cookies()).get(REFRESH_COOKIE)?.value || null;
 }
 
+export async function getAccessTokenFromCookie() {
+  return (await cookies()).get(ACCESS_COOKIE)?.value || null;
+}
+
 export async function getTenantSlugFromCookie() {
   return (await cookies()).get(TENANT_COOKIE)?.value || "cbs";
 }
@@ -42,6 +47,11 @@ export async function getAccessTokenFromRequest(req: Request): Promise<{
   const bearer = auth?.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : null;
   if (bearer) {
     return { accessToken: bearer, rotatedRefreshToken: null };
+  }
+
+  const accessToken = (await cookies()).get(ACCESS_COOKIE)?.value;
+  if (accessToken) {
+    return { accessToken, rotatedRefreshToken: null };
   }
 
   const refreshToken = (await cookies()).get(REFRESH_COOKIE)?.value;
@@ -69,4 +79,18 @@ export function applyRefreshCookie(response: NextResponse, refreshToken: string 
   if (refreshToken) {
     response.cookies.set(REFRESH_COOKIE, refreshToken, authCookieOptions());
   }
+}
+
+export function applyAccessCookie(response: NextResponse, accessToken: string | null, maxAgeSeconds = 60 * 60) {
+  if (accessToken) {
+    response.cookies.set(ACCESS_COOKIE, accessToken, {
+      ...authCookieOptions(),
+      maxAge: maxAgeSeconds,
+    });
+  }
+}
+
+export function clearAuthCookies(response: NextResponse) {
+  response.cookies.delete(REFRESH_COOKIE);
+  response.cookies.delete(ACCESS_COOKIE);
 }

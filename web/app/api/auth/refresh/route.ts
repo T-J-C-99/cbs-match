@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { apiBaseUrl, authCookieOptions, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
+import { ACCESS_COOKIE, apiBaseUrl, authCookieOptions, clearAuthCookies, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
 
 export async function POST() {
   const refreshToken = (await cookies()).get(REFRESH_COOKIE)?.value;
@@ -15,7 +15,7 @@ export async function POST() {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const response = NextResponse.json(data, { status: res.status });
-    response.cookies.delete(REFRESH_COOKIE);
+    clearAuthCookies(response);
     return response;
   }
 
@@ -27,6 +27,12 @@ export async function POST() {
 
   if (data.refresh_token) {
     response.cookies.set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
+  }
+  if (data.access_token) {
+    response.cookies.set(ACCESS_COOKIE, String(data.access_token), {
+      ...authCookieOptions(),
+      maxAge: 60 * 60,
+    });
   }
 
   return response;

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { apiBaseUrl, authCookieOptions, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
+import { ACCESS_COOKIE, apiBaseUrl, authCookieOptions, clearAuthCookies, REFRESH_COOKIE, tenantHeader } from "@/lib/server-api";
 
 async function callMe(accessToken: string) {
   return fetch(`${apiBaseUrl()}/auth/me`, {
@@ -44,13 +44,19 @@ export async function GET(req: Request) {
     // return a clean unauthenticated state and clear refresh cookie so UX can re-login gracefully.
     if (res.status === 403 || res.status === 401) {
       const response = NextResponse.json({ user: null }, { status: 401 });
-      response.cookies.delete(REFRESH_COOKIE);
+      clearAuthCookies(response);
       return response;
     }
     return NextResponse.json({ user: null }, { status: res.status });
   }
 
   const response = NextResponse.json({ user: data, access_token: accessToken });
+  if (accessToken) {
+    response.cookies.set(ACCESS_COOKIE, accessToken, {
+      ...authCookieOptions(),
+      maxAge: 60 * 60,
+    });
+  }
   if (rotatedRefreshToken) {
     response.cookies.set(REFRESH_COOKIE, rotatedRefreshToken, authCookieOptions());
   }
