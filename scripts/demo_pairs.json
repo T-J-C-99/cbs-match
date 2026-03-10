@@ -1,0 +1,55 @@
+{
+  "week": "2026-03-09",
+  "eligible_users": 9,
+  "matched_pairs": 2,
+  "users": [
+    {
+      "name": "Brad",
+      "email": "brad@gsb.columbia.edu",
+      "username": "brad",
+      "gender": "man",
+      "matched_with": "(no match)",
+      "score": "0.8025"
+    },
+    {
+      "name": "Tom",
+      "email": "tom@gsb.columbia.edu",
+      "username": "tom",
+      "gender": "man",
+      "matched_with": "(no match)",
+      "score": "0.8325"
+    },
+    {
+      "name": "Matt",
+      "email": "matt@gsb.columbia.edu",
+      "username": "matt",
+      "gender": "man",
+      "matched_with": "(no match)",
+      "score": "?"
+    },
+    {
+      "name": "Jennifer",
+      "email": "jennifer@gsb.columbia.edu",
+      "username": "jennifer",
+      "gender": "woman",
+      "matched_with": "(no match)",
+      "score": "0.8325"
+    },
+    {
+      "name": "Margot",
+      "email": "margot@gsb.columbia.edu",
+      "username": "margot",
+      "gender": "woman",
+      "matched_with": "(no match)",
+      "score": "0.8025"
+    },
+    {
+      "name": "Oprah",
+      "email": "oprah@gsb.columbia.edu",
+      "username": "oprah",
+      "gender": "woman",
+      "matched_with": "(no match)",
+      "score": "?"
+    }
+  ]
+}
