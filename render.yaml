@@ -67,6 +67,5 @@ services:
 
 databases:
   - name: cbs-match-db
-    plan: starter
     databaseName: cbs_match
     user: cbs_match
