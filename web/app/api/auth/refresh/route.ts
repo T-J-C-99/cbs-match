@@ -14,17 +14,20 @@ export async function POST() {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    (await cookies()).delete(REFRESH_COOKIE);
-    return NextResponse.json(data, { status: res.status });
+    const response = NextResponse.json(data, { status: res.status });
+    response.cookies.delete(REFRESH_COOKIE);
+    return response;
   }
 
-  if (data.refresh_token) {
-    (await cookies()).set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
-  }
-
-  return NextResponse.json({
+  const response = NextResponse.json({
     access_token: data.access_token,
     token_type: data.token_type,
     expires_in: data.expires_in,
   });
+
+  if (data.refresh_token) {
+    response.cookies.set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
+  }
+
+  return response;
 }

@@ -20,18 +20,20 @@ async function refreshFromCookie() {
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.access_token) return null;
 
-  if (data.refresh_token) {
-    (await cookies()).set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
-  }
-
-  return String(data.access_token);
+  return {
+    accessToken: String(data.access_token),
+    refreshToken: data.refresh_token ? String(data.refresh_token) : null,
+  };
 }
 
 export async function GET(req: Request) {
   const auth = req.headers.get("authorization");
   let accessToken = auth?.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : null;
+  let rotatedRefreshToken: string | null = null;
   if (!accessToken) {
-    accessToken = await refreshFromCookie();
+    const refreshed = await refreshFromCookie();
+    accessToken = refreshed?.accessToken ?? null;
+    rotatedRefreshToken = refreshed?.refreshToken ?? null;
   }
   if (!accessToken) return NextResponse.json({ user: null }, { status: 401 });
 
@@ -41,10 +43,16 @@ export async function GET(req: Request) {
     // If tenant context changed in browser but refresh/session cookies are for a different tenant,
     // return a clean unauthenticated state and clear refresh cookie so UX can re-login gracefully.
     if (res.status === 403 || res.status === 401) {
-      (await cookies()).delete(REFRESH_COOKIE);
-      return NextResponse.json({ user: null }, { status: 401 });
+      const response = NextResponse.json({ user: null }, { status: 401 });
+      response.cookies.delete(REFRESH_COOKIE);
+      return response;
     }
     return NextResponse.json({ user: null }, { status: res.status });
   }
-  return NextResponse.json({ user: data, access_token: accessToken });
+
+  const response = NextResponse.json({ user: data, access_token: accessToken });
+  if (rotatedRefreshToken) {
+    response.cookies.set(REFRESH_COOKIE, rotatedRefreshToken, authCookieOptions());
+  }
+  return response;
 }

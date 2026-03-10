@@ -28,10 +28,6 @@ export async function POST(req: Request) {
   const res = proxied;
   if (!res.ok) return NextResponse.json(data, { status: res.status });
 
-  if (data.refresh_token) {
-    (await cookies()).set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
-  }
-
   // Fetch user data with the new token
   const accessToken = data.access_token;
   let user = null;
@@ -52,10 +48,16 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     access_token: data.access_token,
     token_type: data.token_type,
     expires_in: data.expires_in,
     user,
   }, { status: res.status });
+
+  if (data.refresh_token) {
+    response.cookies.set(REFRESH_COOKIE, data.refresh_token, authCookieOptions());
+  }
+
+  return response;
 }
